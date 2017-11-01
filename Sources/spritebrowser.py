@@ -93,7 +93,7 @@ class SpriteAdapter(BaseAdapter):
             bitmap = Bitmap.createScaledBitmap(bitmap, sw, sh, True)
         
         elif scale >= 2:
-            s = Math.min(int(Math.floor(scale)), 4)
+            s = Math.min(int(Math.floor(scale)), 3)
             sw = Math.max(1, s * width)
             sh = Math.max(1, s * height)
             bitmap = Bitmap.createScaledBitmap(bitmap, sw, sh, False)
@@ -154,7 +154,7 @@ class SpriteAdapter(BaseAdapter):
     def getSpriteBitmap(self, position):
     
         name = self.items[position]
-        sprite = self.spritefile.sprites[name]
+        sprite = self.spritefile.getSprite(name)
         bitmap = Bitmap.createBitmap(sprite.width, sprite.height, Bitmap.Config.ARGB_8888)
         bitmap.copyPixelsFromBuffer(ByteBuffer.wrap(sprite.rgba))
         
@@ -182,7 +182,7 @@ class SpriteBrowser(LinearLayout):
         self.grid = GridView(context)
         self.grid.setHorizontalSpacing(8)
         self.grid.setVerticalSpacing(8)
-        self.grid.setNumColumns(2)
+        self.grid.setNumColumns(3)
         self.grid.setAdapter(self.spriteAdapter)
         self.grid.setOnItemClickListener(self)
         self.addView(self.grid)

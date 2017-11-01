@@ -33,6 +33,7 @@ class Sprite(Object):
 
     __fields__ = {
         "name": String,
+        "read": bool, "offset": int,
         "h_words": int, "v_lines": int,
         "first_bit": int, "last_bit": int,
         "bpp": int, "log2bpp": int,
@@ -46,6 +47,7 @@ class Sprite(Object):
     def __init__(self):
     
         Object.__init__(self)
+        self.read = False
 
 
 class Palette(Object):
@@ -192,14 +194,12 @@ class Spritefile(Object):
         return v
     
     @args(int, [RandomAccessFile, int])
-    def read_details(self, f, offset):
+    def read_name(self, f, offset):
     
-        # Go to start of this sprite
+        # Go to the start of this sprite.
         f.seek(offset)
         
         next = self.str2num(4, f)
-        
-        sprite = Sprite()
         
         name = array(byte, 12)
         f.read(name)
@@ -209,7 +209,23 @@ class Spritefile(Object):
                 name = name[:i]
                 break
         
+        sprite = Sprite()
         sprite.name = String(name, "ASCII")
+        sprite.offset = offset
+        
+        self.sprites[sprite.name] = sprite
+        
+        return next
+    
+    @args(void, [RandomAccessFile, Sprite])
+    def read_details(self, f, sprite):
+    
+        # Go to the start of this sprite.
+        offset = sprite.offset
+        f.seek(offset)
+        
+        # Skip the next offset and name.
+        f.skipBytes(16)
         
         # Read width of sprite in words and height in scan lines.
         # These is stored in the Spritefile as width-1 and height-1.
@@ -401,15 +417,12 @@ class Spritefile(Object):
             # The image is stored in RGBA form.
             sprite.mode = 'RGBA'
         
-        self.sprites[sprite.name] = sprite
-        
-        return next
+        sprite.read = True
     
     @args(void, [File])
     def read(self, file):
     
         f = RandomAccessFile(file, "r")
-        size = f.length()
         
         # Examine the sprites
         number = self.str2num(4, f)
@@ -418,10 +431,20 @@ class Spritefile(Object):
         
         self.sprites = {}
         
+        o = offset
         while offset < free:
+            offset += self.read_name(f, offset)
+    
+    @args(Sprite, [String])
+    def getSprite(self, name):
+    
+        f = RandomAccessFile(self.file, "r")
         
-            next = self.read_details(f, offset)
-            offset = offset + next
+        sprite = self.sprites[name]
+        if not sprite.read:
+            self.read_details(f, sprite)
+        
+        return sprite
     
     @args(void, [RandomAccessFile, Sprite])
     def sprite2rgb(self, f, sprite):
