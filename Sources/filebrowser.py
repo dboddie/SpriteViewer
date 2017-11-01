@@ -19,7 +19,7 @@ from java.util import List
 
 from android.os import Environment
 from android.util import TypedValue
-from android.view import View
+from android.view import View, ViewGroup
 from android.widget import AdapterView, LinearLayout, ListView, TextView
 
 from serpentine.adapters import FileListAdapter
@@ -62,7 +62,9 @@ class FileBrowser(LinearLayout):
         self.fileView = ListView(context)
         self.fileView.setAdapter(self.fileAdapter)
         self.fileView.setOnItemClickListener(self)
-        self.addView(self.fileView)
+        self.addView(self.fileView, ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT))
     
     @args(void, [AdapterView, View, int, long])
     def onItemClick(self, parent, view, position, id):

@@ -128,6 +128,8 @@ class SpriteAdapter(BaseAdapter):
     
         self.spritefile = Spritefile(file)
         self.items = LinkedList(self.spritefile.sprites.keySet())
+        self.cache = {}
+        self.positions = []
     
     @args(Bitmap, [int])
     def getSpriteBitmap(self, position):
@@ -179,8 +181,8 @@ class SpriteRenderer(AsyncTask):
         paint.setXfermode(PorterDuffXfermode(PorterDuff.Mode.SRC))
         
         if ready:
-            b1 = Color.argb(255, 64, 64, 64)
-            b2 = Color.argb(255, 96, 96, 96)
+            b1 = Color.argb(255, 96, 96, 96)
+            b2 = Color.argb(255, 128, 128, 128)
         else:
             b1 = Color.argb(255, 32, 32, 32)
             b2 = Color.argb(255, 64, 64, 64)
