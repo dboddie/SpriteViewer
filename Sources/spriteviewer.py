@@ -13,7 +13,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from java.io import BufferedOutputStream, File, FileOutputStream
+from android.content import Intent
+from android.graphics import Bitmap
+from android.os import Environment
+from android.net import Uri
+
 from serpentine.activities import Activity
+from serpentine.files import Files
 
 from app_resources import R
 
@@ -73,6 +80,15 @@ class SpriteViewerActivity(Activity):
     
     def handleSpriteView(self, bitmap):
     
-        #self.spriteBrowser.openFile(file)
-        #self.setContentView(self.spriteBrowser)
-        pass
+        file = Files.createExternalFile(Environment.DIRECTORY_DOWNLOADS,
+            "SpriteViewer", "temp", "", ".png")
+        
+        stream = BufferedOutputStream(FileOutputStream(file))
+        bitmap.compress(Bitmap.CompressFormat.PNG, 50, stream)
+        stream.flush()
+        # Closing the file with close() will cause an exception.
+        
+        intent = Intent()
+        intent.setAction(Intent.ACTION_VIEW)
+        intent.setDataAndType(Uri.parse("file://" + file.getPath()), "image/png")
+        self.startActivity(intent)

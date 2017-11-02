@@ -16,7 +16,7 @@
 from java.io import File
 from java.lang import Byte, Math, Object, String
 from java.nio import ByteBuffer
-from java.util import LinkedList, List, Map, Queue
+from java.util import Collections, LinkedList, List, Map, Queue
 
 from android.graphics import Bitmap, Canvas, Color, Paint, \
                              PorterDuff, PorterDuffXfermode
@@ -128,6 +128,7 @@ class SpriteAdapter(BaseAdapter):
     
         self.spritefile = Spritefile(file)
         self.items = LinkedList(self.spritefile.sprites.keySet())
+        Collections.sort(self.items)
         self.cache = {}
         self.positions = []
     
@@ -291,7 +292,7 @@ class SpriteRenderer(AsyncTask):
 
 class SpriteBrowser(LinearLayout):
 
-    __interfaces__ = [AdapterView.OnItemClickListener]
+    __interfaces__ = [AdapterView.OnItemLongClickListener]
     __fields__ = {"handler": SpriteViewInterface}
     
     def __init__(self, context):
@@ -307,14 +308,15 @@ class SpriteBrowser(LinearLayout):
         self.grid.setVerticalSpacing(8)
         self.grid.setNumColumns(3)
         self.grid.setAdapter(self.spriteAdapter)
-        self.grid.setOnItemClickListener(self)
+        self.grid.setOnItemLongClickListener(self)
         self.addView(self.grid)
     
-    @args(void, [AdapterView, View, int, long])
-    def onItemClick(self, parent, view, position, id):
+    @args(bool, [AdapterView, View, int, long])
+    def onItemLongClick(self, parent, view, position, id):
     
         bitmap = self.spriteAdapter.getSpriteBitmap(position)
         self.handler.handleSpriteView(bitmap)
+        return True
     
     @args(void, [SpriteViewInterface])
     def setHandler(self, handler):
