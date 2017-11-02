@@ -126,10 +126,7 @@ class SpriteAdapter(BaseAdapter):
     @args(void, [File])
     def setFile(self, file):
     
-        try:
-            self.spritefile = Spritefile(file)
-        except:
-            return
+        self.spritefile = Spritefile(file)
         
         self.items = LinkedList(self.spritefile.sprites.keySet())
         Collections.sort(self.items)
