@@ -188,8 +188,7 @@ class Spritefile(Object):
     @args(int, [RandomAccessFile])
     def read_byte(self, f):
     
-        b = f.read()
-        v = Byte(b).intValue()
+        v = int(f.read())
         if v < 0: v += 256
         return v
     
@@ -474,7 +473,7 @@ class Spritefile(Object):
             f.read(row)
             
             j = 0
-            k = sprite.first_bit
+            k = sprite.first_bit / 8
             
             while j < sprite.width:
             
@@ -483,15 +482,18 @@ class Spritefile(Object):
                 # Conversion depends on bpp value
                 if sprite.bpp == 32:
 
-                    red = Byte(row[k]).intValue()
-                    green = Byte(row[k + 1]).intValue()
-                    blue = Byte(row[k + 2]).intValue()
+                    red = int(row[k])
+                    green = int(row[k + 1])
+                    blue = int(row[k + 2])
                     k += 4
                 
                 elif sprite.bpp == 16:
                 
-                    value = Byte(row[k]).intValue()
-                    value |= Byte(row[k + 1]).intValue() << 8
+                    low = int(row[k])
+                    if low < 0: low += 256
+                    high = int(row[k + 1])
+                    if high < 0: high += 256
+                    value = low | (high << 8)
                     red   = int((value & 0x1f) * self.scale16)
                     green = int(((value >> 5) & 0x1f) * self.scale16)
                     blue  = int(((value >> 10) & 0x1f) * self.scale16)
@@ -501,7 +503,7 @@ class Spritefile(Object):
                 
                     if not has_palette:
                         # Standard VIDC 256 colours
-                        value = Byte(row[k]).intValue()
+                        value = int(row[k])
                         red   = ((value & 0x10) >> 1) | (value & 7)
                         green = ((value & 0x40) >> 3) | \
                                 ((value & 0x20) >> 3) | (value & 3)
@@ -512,14 +514,14 @@ class Spritefile(Object):
                         blue  = int(blue * self.scale8)
                     else:
                         # 256 entry palette
-                        value = Byte(row[k]).intValue()
+                        value = int(row[k])
                         red, green, blue = sprite.palette.getEntry(value).primary
                     
                     k += 1
                 
                 elif sprite.bpp == 4:
                 
-                    value = (Byte(row[k]).intValue() >> (int(row_ptr) % 8)) & 0xf
+                    value = (int(row[k]) >> (int(row_ptr) % 8)) & 0xf
                     
                     if not has_palette:
                         # Standard 16 desktop colours
@@ -535,7 +537,7 @@ class Spritefile(Object):
                 
                 elif sprite.bpp == 2:
                 
-                    value = (Byte(row[k]).intValue() >> (int(row_ptr) % 8)) & 0x3
+                    value = (int(row[k]) >> (int(row_ptr) % 8)) & 0x3
                     
                     if not has_palette:
                         # Greyscales
@@ -550,7 +552,7 @@ class Spritefile(Object):
                 
                 elif sprite.bpp == 1:
                 
-                    value = (Byte(row[k]).intValue() >> (int(row_ptr) % 8)) & 1
+                    value = (int(row[k]) >> (int(row_ptr) % 8)) & 1
                     
                     if not has_palette:
                         # Black and white
