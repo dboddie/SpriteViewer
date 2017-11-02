@@ -70,6 +70,7 @@ class SpriteViewerActivity(Activity):
             Activity.onBackPressed(self)
         else:
             self.showing = "files"
+            self.fileBrowser.rescan()
             self.setContentView(self.fileBrowser)
     
     def handleFileOpen(self, file):

@@ -56,15 +56,19 @@ class FileBrowser(LinearLayout):
         
         self.handler = None
         
-        envDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-        self.fileAdapter = SpriteFileListAdapter(envDir, [".spr", ",ff9", ".ff9"])
-        
         self.fileView = ListView(context)
-        self.fileView.setAdapter(self.fileAdapter)
         self.fileView.setOnItemClickListener(self)
+        self.rescan()
+        
         self.addView(self.fileView, ViewGroup.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.WRAP_CONTENT))
+    
+    def rescan(self):
+    
+        envDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+        self.fileAdapter = SpriteFileListAdapter(envDir, [".spr", ",ff9", ".ff9"])
+        self.fileView.setAdapter(self.fileAdapter)
     
     @args(void, [AdapterView, View, int, long])
     def onItemClick(self, parent, view, position, id):
