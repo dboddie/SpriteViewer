@@ -521,7 +521,7 @@ class Spritefile(Object):
                 
                 elif sprite.bpp == 4:
                 
-                    value = (int(row[k]) >> (int(row_ptr) % 8)) & 0xf
+                    value = (row[k] >> (int(row_ptr) % 8)) & 0xf
                     
                     if not has_palette:
                         # Standard 16 desktop colours
@@ -537,7 +537,7 @@ class Spritefile(Object):
                 
                 elif sprite.bpp == 2:
                 
-                    value = (int(row[k]) >> (int(row_ptr) % 8)) & 0x3
+                    value = (row[k] >> (int(row_ptr) % 8)) & 0x3
                     
                     if not has_palette:
                         # Greyscales
@@ -552,7 +552,7 @@ class Spritefile(Object):
                 
                 elif sprite.bpp == 1:
                 
-                    value = (int(row[k]) >> (int(row_ptr) % 8)) & 1
+                    value = (row[k] >> (int(row_ptr) % 8)) & 1
                     
                     if not has_palette:
                         # Black and white
