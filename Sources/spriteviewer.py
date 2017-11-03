@@ -61,7 +61,7 @@ class SpriteViewerActivity(Activity):
     def onConfigurationChanged(self, config):
     
         Activity.onConfigurationChanged(self, config)
-        #self.gamePage.updateLayout(config.screenWidthDp, config.screenHeightDp)
+        self.spriteBrowser.updateLayout(config.screenWidthDp)
     
     def onBackPressed(self):
     
@@ -78,6 +78,7 @@ class SpriteViewerActivity(Activity):
         self.spriteBrowser.openFile(file)
         self.showing = "sprites"
         self.setContentView(self.spriteBrowser)
+        self.spriteBrowser.updateLayout(self.fileBrowser.getWidth())
     
     def handleSpriteView(self, bitmap):
     

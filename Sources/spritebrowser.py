@@ -58,6 +58,8 @@ class SpriteAdapter(BaseAdapter):
         "positions": Queue(int)
         }
     
+    size = 128
+    
     @args(void, [])
     def __init__(self):
     
@@ -65,7 +67,6 @@ class SpriteAdapter(BaseAdapter):
         
         self.spritefile = None
         self.items = []
-        self.size = 128
         
         self.cache = {}
         self.positions = []
@@ -311,6 +312,11 @@ class SpriteBrowser(LinearLayout):
         self.grid.setAdapter(self.spriteAdapter)
         self.grid.setOnItemLongClickListener(self)
         self.addView(self.grid)
+    
+    @args(void, [int])
+    def updateLayout(self, screenWidthDp):
+    
+        self.grid.setNumColumns(screenWidthDp/SpriteAdapter.size)
     
     @args(bool, [AdapterView, View, int, long])
     def onItemLongClick(self, parent, view, position, id):
