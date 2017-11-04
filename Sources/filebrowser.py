@@ -36,6 +36,21 @@ class SpriteFileListAdapter(FileListAdapter):
         view = FileListAdapter.getView(self, position, convertView, parent)
         CAST(view, TextView).setTextSize(TypedValue.COMPLEX_UNIT_SP, float(20))
         return view
+    
+    @args(bool, [])
+    def update(self):
+    
+        items = self.items
+        self.items = []
+        
+        for suffix in self.suffixes:
+            self.addFiles(suffix)
+        
+        for item1, item2 in zip(items, self.items):
+            if item1 != item2:
+                return True
+        
+        return False
 
 
 class FileOpenInterface:
@@ -56,9 +71,12 @@ class FileBrowser(LinearLayout):
         
         self.handler = None
         
+        envDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+        self.fileAdapter = SpriteFileListAdapter(envDir, [".spr", ",ff9", ".ff9"])
+        
         self.fileView = ListView(context)
         self.fileView.setOnItemClickListener(self)
-        self.rescan()
+        self.fileView.setAdapter(self.fileAdapter)
         
         self.addView(self.fileView, ViewGroup.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
@@ -66,9 +84,8 @@ class FileBrowser(LinearLayout):
     
     def rescan(self):
     
-        envDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-        self.fileAdapter = SpriteFileListAdapter(envDir, [".spr", ",ff9", ".ff9"])
-        self.fileView.setAdapter(self.fileAdapter)
+        if self.fileAdapter.update():
+            self.fileView.setAdapter(self.fileAdapter)
     
     @args(void, [AdapterView, View, int, long])
     def onItemClick(self, parent, view, position, id):
