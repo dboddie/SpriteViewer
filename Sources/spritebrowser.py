@@ -313,6 +313,10 @@ class SpriteBrowser(LinearLayout):
         self.grid.setOnItemLongClickListener(self)
         self.addView(self.grid)
     
+    def onSizeChanged(self, width, height, oldWidth, oldHeight):
+    
+        self.grid.setNumColumns(width/SpriteAdapter.size)
+    
     @args(void, [int])
     def updateLayout(self, screenWidthDp):
     

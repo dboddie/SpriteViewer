@@ -20,6 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import json, os, sys
 
 from Tools import buildhelper
+from Tools.makeandroidmanifest import *
 
 # See docs/guide/topics/resources/runtime-changes.html
 # android.content.pm.ActivityInfo
@@ -27,18 +28,60 @@ CONFIG_ORIENTATION = 0x0080
 CONFIG_SCREEN_SIZE = 0x0400
 
 app_name = "Sprite Viewer"
-activity_dict = {
-    "android:configChanges": CONFIG_ORIENTATION | CONFIG_SCREEN_SIZE
-    }
 package_name = "uk.org.boddie.spriteviewer"
+
+# The manifest is defined as a sequence of elements that will be passed as the
+# description to the build helper instead of a dictionary with attributes for
+# the Activity element.
+
+activity_manifest = [
+    Manifest({"package": package_name}, [
+        # Features and permissions must be inserted here.
+        Application({"android:icon": "@drawable/ic_launcher"}, [
+            Activity({
+                "android:name": "SpriteViewerActivity",
+                "android:configChanges": CONFIG_ORIENTATION | CONFIG_SCREEN_SIZE
+                }, [
+                # Define subelements that describe intent filters.
+                # The first one allows the application to be launched.
+                IntentFilter({}, [
+                    Action({"android:name": "android.intent.action.MAIN"}),
+                    Category({"android:name": "android.intent.category.LAUNCHER"})
+                    ]),
+                # The second one specifies that the application can be used to
+                # view files with certain patterns.
+                IntentFilter({}, [
+                    Data({"android:scheme": "file",
+                          "android:mimeType": "*/*",
+                          "android:pathPattern": r".*\.spr",
+                          "android:host": "*"}),
+                    Data({"android:scheme": "file",
+                          "android:mimeType": "*/*",
+                          "android:pathPattern": r".*\.ff9",
+                          "android:host": "*"}),
+                    Data({"android:scheme": "file",
+                          "android:mimeType": "*/*",
+                          "android:pathPattern": r".*,ff9",
+                          "android:host": "*"}),
+                    Action({"android:name": "android.intent.action.VIEW"}),
+                    Category({"android:name": "android.intent.category.DEFAULT"}),
+                    ])
+                ])
+            ])
+        ])
+    ]
+
 res_files = {
-    "drawable": {"ic_launcher": "Resources/icon.svg"},
-    #"raw": {"sample": "Resources/sample.jef"}
+    "drawable": {"ic_launcher": "Resources/icon.svg"}
     }
 code_file = "Sources/spriteviewer.py"
 include_paths = []
 layout = None
 features = []
+
+# We need to allow external storage to be read just to be generally useful,
+# but also need write access so that we can write temporary PNG files for other
+# applications to display.
 permissions = ["android.permission.READ_EXTERNAL_STORAGE",
                "android.permission.WRITE_EXTERNAL_STORAGE"]
 
@@ -46,8 +89,11 @@ if __name__ == "__main__":
 
     args = sys.argv[:]
     
+    # Use the custom application template so that we can use the manifest we
+    # defined above.
     result = buildhelper.main(__file__, app_name, package_name, res_files,
         layout, code_file, include_paths, features, permissions, args,
-        description = activity_dict, include_sources = False)
+        app_template = "custom", description = activity_manifest,
+        include_sources = False)
     
     sys.exit(result)

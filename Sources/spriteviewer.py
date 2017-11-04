@@ -49,6 +49,16 @@ class SpriteViewerActivity(Activity):
         self.spriteBrowser.setHandler(self)
         
         self.setContentView(self.fileBrowser)
+        
+        # Obtain the intent that caused the activity to be started.
+        self.initial_view = "files"
+        
+        intent = self.getIntent()
+        if intent.getAction() == Intent.ACTION_VIEW:
+            uri = intent.getData()
+            if uri.getScheme() == "file":
+                self.initial_view = "sprites"
+                self.handleFileOpen(File(uri.getPath()))
     
     def onResume(self):
     
@@ -65,8 +75,8 @@ class SpriteViewerActivity(Activity):
     
     def onBackPressed(self):
     
-        # If showing the file browser then exit, otherwise show the file browser.
-        if self.showing == "files":
+        # If showing the initial view then exit, otherwise show the file browser.
+        if self.showing == self.initial_view:
             Activity.onBackPressed(self)
         else:
             self.showing = "files"
@@ -78,7 +88,6 @@ class SpriteViewerActivity(Activity):
         self.spriteBrowser.openFile(file)
         self.showing = "sprites"
         self.setContentView(self.spriteBrowser)
-        self.spriteBrowser.updateLayout(self.fileBrowser.getWidth())
     
     def handleSpriteView(self, bitmap):
     
