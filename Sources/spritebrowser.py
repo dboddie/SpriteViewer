@@ -27,12 +27,21 @@ from android.widget import AdapterView, BaseAdapter, ImageView, GridView, \
 
 from spritefile import Spritefile
 
+"""We define an interface that classes can implement to indicate that they can
+handle the action of viewing a sprite. The `handleSpriteView` method they
+implement accepts the `Bitmap` representation of the sprite which can be
+displayed or sent to a suitable component."""
+
 class SpriteViewInterface:
 
     @args(void, [Bitmap])
     def handleSpriteView(self, bitmap):
         pass
 
+
+"""We define a class to represent an entry in the cache that is used by the
+`SpriteAdapter` class. It holds the name of a sprite and its bitmap
+representation."""
 
 class CacheEntry(Object):
 
@@ -46,6 +55,15 @@ class CacheEntry(Object):
         self.bitmap = bitmap
 
 
+"""The following class exposes the contents of a spritefile to instances of
+`AdapterView` subclasses, such as `ListView` or `GridView`. It defines a
+constant preview size for the sprites that it represents, scaling each sprite
+to fit within a square with sides of this length.
+
+The class uses a cache with a constant maximum size to avoid having to render
+sprites each time an item is requested by a view. Sprite rendering is performed
+asynchronously using the `AsyncTask` class."""
+
 class SpriteAdapter(BaseAdapter):
 
     __fields__ = {
@@ -56,7 +74,8 @@ class SpriteAdapter(BaseAdapter):
         "positions": Queue(int)
         }
     
-    size = 128
+    preview_size = 128
+    cache_size = 20
     
     @args(void, [])
     def __init__(self):
@@ -81,6 +100,14 @@ class SpriteAdapter(BaseAdapter):
     def getItemId(self, position):
         return long(0)
     
+    """We implement the `getView` method to provide a `LinearLayout` view for
+    each item, containing an `ImageView` and a `TextView`. For sprites in the
+    cache, we obtain a `Bitmap` and include it in the layout. Sprites that
+    need to be rendered are represented by a placeholder `Bitmap` and a
+    background task is started to render the sprite. When rendering is
+    complete, the `SpriteRenderer` object that performs the task will update
+    the `ImageView` with a new `Bitmap`."""
+    
     @args(View, [int, View, ViewGroup])
     def getView(self, position, convertView, parent):
     
@@ -97,7 +124,7 @@ class SpriteAdapter(BaseAdapter):
             bitmap = entry.bitmap
             imageView.setImageBitmap(bitmap)
             
-            if len(self.positions) > 20:
+            if len(self.positions) > self.cache_size:
                 self.cache.remove(self.positions.remove())
         
         else:
@@ -106,12 +133,14 @@ class SpriteAdapter(BaseAdapter):
                                       self.cache, self.positions)
             
             # Create a placeholder bitmap to put into the view.
-            bitmap = renderer.emptyBitmap(self.size, self.size, False)
+            bitmap = renderer.emptyBitmap(self.preview_size, self.preview_size,
+                                          False)
             imageView.setImageBitmap(bitmap)
             
             # Create a list then convert it to an array. The initial list
             # creation causes the items to be wrapped in Integer objects.
-            renderer.execute(array([self.size, self.size, position]))
+            renderer.execute(array([self.preview_size, self.preview_size,
+                                    position]))
         
         textView = TextView(context)
         textView.setText(name)
@@ -122,32 +151,36 @@ class SpriteAdapter(BaseAdapter):
         
         return layout
     
+    """This method is used to tell the adapter which file to examine. We create
+    a `Spritefile` object for the given file and read the names of the sprites
+    it contains. We also clear the structures used to hold cache information."""
+    
     @args(void, [File])
     def setFile(self, file):
     
-        self.spritefile = Spritefile(file)
+        try:
+            self.spritefile = Spritefile(file)
+            self.items = LinkedList(self.spritefile.sprites.keySet())
+            Collections.sort(self.items)
+        except:
+            self.items = []
         
-        self.items = LinkedList(self.spritefile.sprites.keySet())
-        Collections.sort(self.items)
         self.cache = {}
         self.positions = []
+    
+    """This method is used to obtain a `Bitmap` for a sprite at a given
+    position in the list of items held by the adapter."""
     
     @args(Bitmap, [int])
     def getSpriteBitmap(self, position):
     
         name = self.items[position]
-        sprite = self.spritefile.getSprite(name)
-        
-        bitmap = Bitmap.createBitmap(sprite.width, sprite.height, Bitmap.Config.ARGB_8888)
-        bitmap.copyPixelsFromBuffer(ByteBuffer.wrap(sprite.rgba))
-        
-        if sprite.ydpi < sprite.xdpi:
-            yscale = sprite.xdpi/sprite.ydpi
-            bitmap = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth(),
-                bitmap.getHeight() * yscale, False)
-        
-        return bitmap
+        return SpriteRenderer.getSpriteBitmap(self.spritefile, name)
 
+
+"""The following class is used to render each sprite asynchronously in a
+background thread.
+"""
 
 class SpriteRenderer(AsyncTask):
 
@@ -206,10 +239,20 @@ class SpriteRenderer(AsyncTask):
         
         return bitmap
     
+    """We define a method to obtain a sprite from the spritefile. This is
+    potentially a slow operation, which is why it is called by the
+    `doInBackground` method below."""
+    
     @args(Bitmap, [])
     def getSpriteBitmap(self):
     
-        sprite = self.spritefile.getSprite(self.name)
+        return self.getSpriteBitmap(self.spritefile, self.name)
+    
+    @static
+    @args(Bitmap, [Spritefile, String])
+    def getSpriteBitmap(spritefile, name):
+    
+        sprite = spritefile.getSprite(name)
         
         bitmap = Bitmap.createBitmap(sprite.width, sprite.height, Bitmap.Config.ARGB_8888)
         bitmap.copyPixelsFromBuffer(ByteBuffer.wrap(sprite.rgba))
@@ -262,19 +305,14 @@ class SpriteRenderer(AsyncTask):
         
         return preview
     
-    """As each thread is drawn, the current bitmap is published to show the
-    progress made. When all threads have been drawn, the final bitmap is
-    returned.
-    
-    The following method handles each publication of the progress made while
-    rendering, updating the `ImageView` that displays the bitmap in the
-    application's main UI thread."""
+    """As each sprite is drawn it is possible to report progress to the
+    adapter that started this task. In this application we don't take
+    advantage of this feature so the following method does nothing."""
     
     @args(void, [[Progress]])
     def onProgressUpdate(self, progress):
     
-        bitmap = progress[0]
-        self.imageView.setImageBitmap(bitmap)
+        pass
     
     """When all processing has finished, the following method is called by the
     application framework to allow the final result to be handled in the main
@@ -289,6 +327,13 @@ class SpriteRenderer(AsyncTask):
         self.queue.add(self.position)
         self.imageView.setImageBitmap(result)
 
+
+"""The following class provides a `View` that encapsulates both the adapter
+that supplies rendered sprites and a grid in which to display them. It allows
+registration of a handler that implements the `SpriteViewInterface` and will
+call the method defined in that interface for sprites that are selected using
+a long click. This mechanism is how sprite view requests are communicated to
+the main activity."""
 
 class SpriteBrowser(LinearLayout):
 
@@ -311,26 +356,44 @@ class SpriteBrowser(LinearLayout):
         self.grid.setOnItemLongClickListener(self)
         self.addView(self.grid)
     
+    """This method ensures that the view displays a reasonable number of
+    columns in the grid when it is first shown."""
+    
     def onSizeChanged(self, width, height, oldWidth, oldHeight):
     
-        self.grid.setNumColumns(width/SpriteAdapter.size)
+        self.grid.setNumColumns(width/SpriteAdapter.preview_size)
+    
+    """This method is used to help the view adapt to configuration changes
+    due to reorientation of the device running the application. It simply
+    uses the size of the screen to determine how many columns can be shown."""
     
     @args(void, [int])
     def updateLayout(self, screenWidthDp):
     
-        self.grid.setNumColumns(screenWidthDp/SpriteAdapter.size)
+        self.grid.setNumColumns(screenWidthDp/SpriteAdapter.preview_size)
+    
+    """In this method we acknowledge a long click on a sprite in the grid,
+    obtain a `Bitmap` for the sprite and call the appropriate method of the
+    registered handler object."""
     
     @args(bool, [AdapterView, View, int, long])
     def onItemLongClick(self, parent, view, position, id):
     
         bitmap = self.spriteAdapter.getSpriteBitmap(position)
-        self.handler.handleSpriteView(bitmap)
+        
+        if self.handler != None:
+            self.handler.handleSpriteView(bitmap)
+        
         return True
     
     @args(void, [SpriteViewInterface])
     def setHandler(self, handler):
     
         self.handler = handler
+    
+    """The main activity calls this method to tell the browser to display the
+    contents of the given file. We simply update the adapter to use the new
+    file and refresh the grid by passing the adapter to it."""
     
     @args(void, [File])
     def openFile(self, file):

@@ -78,12 +78,16 @@ code_file = "Sources/spriteviewer.py"
 include_paths = []
 layout = None
 features = []
+docs_dir = os.path.join(os.path.split(__file__)[0], "Docs")
 
 # We need to allow external storage to be read just to be generally useful,
 # but also need write access so that we can write temporary PNG files for other
 # applications to display.
 permissions = ["android.permission.READ_EXTERNAL_STORAGE",
                "android.permission.WRITE_EXTERNAL_STORAGE"]
+
+# Define a page header for the documentation.
+page_header = "<h1>Sprite Viewer</h1>\n\n"
 
 if __name__ == "__main__":
 
@@ -94,6 +98,7 @@ if __name__ == "__main__":
     result = buildhelper.main(__file__, app_name, package_name, res_files,
         layout, code_file, include_paths, features, permissions, args,
         app_template = "custom", description = activity_manifest,
-        include_sources = False)
+        include_sources = False, docs_dir = docs_dir,
+        doc_options = {"page header": page_header})
     
     sys.exit(result)
