@@ -25,8 +25,6 @@ from android.view import View, ViewGroup
 from android.widget import AdapterView, BaseAdapter, ImageView, GridView, \
                            LinearLayout, TextView
 
-from serpentine.adapters import FileListAdapter
-
 from spritefile import Spritefile
 
 class SpriteViewInterface:

@@ -13,9 +13,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from java.io import DataInputStream, File, FileInputStream, InputStream, \
-                    IOException, RandomAccessFile
-from java.lang import Byte, Exception, Object, String
+from java.io import File, IOException, RandomAccessFile
+from java.lang import Exception, Object, String
 from java.nio import ByteBuffer, ByteOrder
 from java.util import List, Map
 

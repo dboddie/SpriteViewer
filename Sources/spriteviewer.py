@@ -22,8 +22,6 @@ from android.net import Uri
 from serpentine.activities import Activity
 from serpentine.files import Files
 
-from app_resources import R
-
 from filebrowser import FileBrowser, FileOpenInterface
 from spritebrowser import SpriteBrowser, SpriteViewInterface
 
