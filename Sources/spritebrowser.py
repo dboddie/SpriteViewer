@@ -13,6 +13,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+"""The `spritebrowser` module provides classes for displaying the contents of
+spritefiles."""
+
 from java.io import File
 from java.lang import Byte, Math, Object, String
 from java.nio import ByteBuffer
@@ -385,6 +388,9 @@ class SpriteBrowser(LinearLayout):
             self.handler.handleSpriteView(bitmap)
         
         return True
+    
+    """The following method handles registration of an object that implements
+    the `SpriteViewInterface` interface."""
     
     @args(void, [SpriteViewInterface])
     def setHandler(self, handler):

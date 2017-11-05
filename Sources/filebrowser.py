@@ -13,6 +13,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+"""The `filebrowser` module provides classes and views for displaying a list of
+spritefiles."""
+
 from java.io import File
 from java.lang import String
 from java.util import List
@@ -23,6 +26,9 @@ from android.view import View, ViewGroup
 from android.widget import AdapterView, LinearLayout, ListView, TextView
 
 from serpentine.adapters import FileListAdapter
+
+"""The following class defines an adapter that exposes names of files in a
+directory with particular file suffixes."""
 
 class SpriteFileListAdapter(FileListAdapter):
 
@@ -36,6 +42,9 @@ class SpriteFileListAdapter(FileListAdapter):
         view = FileListAdapter.getView(self, position, convertView, parent)
         CAST(view, TextView).setTextSize(TypedValue.COMPLEX_UNIT_SP, float(20))
         return view
+    
+    """We define a method to obtain a new list of file names and report whether
+    the list has changed."""
     
     @args(bool, [])
     def update(self):
@@ -53,12 +62,25 @@ class SpriteFileListAdapter(FileListAdapter):
         return False
 
 
+"""We define an interface that other components can implement to handle a
+callback when a file is selected by the user. The `handleFileOpen` method of
+a registered component will be called with a `File` object that corresponds to
+the file that the user selected."""
+
 class FileOpenInterface:
 
     @args(void, [File])
     def handleFileOpen(self, file):
         pass
 
+
+"""The following class provides a `View` that encapsulates the adapter that
+exposes file information and the `ListView` that presents them to the user.
+It allows registration of a handler that implements the `FileOpenInterface` and
+will call the method defined in that interface for files that are selected
+using a click. This mechanism is how file open requests are communicated to
+the main activity.
+"""
 
 class FileBrowser(LinearLayout):
 
@@ -82,16 +104,28 @@ class FileBrowser(LinearLayout):
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.WRAP_CONTENT))
     
+    """We provide a method that the activity can use to request a new list of
+    file names, only refreshing the view if the list has changed."""
+    
     def rescan(self):
     
         if self.fileAdapter.update():
             self.fileView.setAdapter(self.fileAdapter)
     
+    """This method is called when the user clicks a file name in the
+    `ListView`, responding by calling the appropriate method of the registered
+    handler object."""
+    
     @args(void, [AdapterView, View, int, long])
     def onItemClick(self, parent, view, position, id):
     
         file = self.fileAdapter.items[position]
-        self.handler.handleFileOpen(file)
+        
+        if self.handler != None:
+            self.handler.handleFileOpen(file)
+    
+    """The following method handles registration of an object that implements
+    the `FileOpenInterface` interface."""
     
     @args(void, [FileOpenInterface])
     def setHandler(self, handler):
