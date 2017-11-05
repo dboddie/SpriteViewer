@@ -78,7 +78,8 @@ code_file = "Sources/spriteviewer.py"
 include_paths = []
 layout = None
 features = []
-docs_dir = os.path.join(os.path.split(__file__)[0], "Docs")
+this_dir = os.path.split(os.path.abspath(__file__))[0]
+docs_dir = os.path.join(this_dir, "Docs")
 
 # We need to allow external storage to be read just to be generally useful,
 # but also need write access so that we can write temporary PNG files for other

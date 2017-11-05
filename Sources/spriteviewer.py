@@ -13,6 +13,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+"""The `spriteviewer` module provides the main activity class for the Sprite
+Viewer application."""
+
 from java.io import BufferedOutputStream, File, FileOutputStream
 from android.content import Intent
 from android.graphics import Bitmap
@@ -24,6 +27,11 @@ from serpentine.files import Files
 
 from filebrowser import FileBrowser, FileOpenInterface
 from spritebrowser import SpriteBrowser, SpriteViewInterface
+
+"""The `SpriteViewerActivity` class represents the application and defines the
+high level parts of the user interface. It also implements interfaces defined
+in the [filebrowser](filebrowser.html) and [spritebrowser](spritebrowser.html)
+modules."""
 
 class SpriteViewerActivity(Activity):
 
@@ -48,12 +56,18 @@ class SpriteViewerActivity(Activity):
         
         self.setContentView(self.fileBrowser)
         
-        # Obtain the intent that caused the activity to be started.
+        # Obtain the intent that caused the activity to be started and define
+        # the initial view to be displayed.
+        intent = self.getIntent()
+        
         self.initial_view = "files"
         
-        intent = self.getIntent()
+        # If the application was started with an intent requesting a view
+        # action then we show the sprite browser instead of the file browser.
         if intent.getAction() == Intent.ACTION_VIEW:
+        
             uri = intent.getData()
+            
             if uri.getScheme() == "file":
                 self.initial_view = "sprites"
                 self.handleFileOpen(File(uri.getPath()))
@@ -66,10 +80,19 @@ class SpriteViewerActivity(Activity):
     
         Activity.onPause(self)
     
+    """The following method is used to respond to configuration changes, such
+    as those caused by an orientation change, calling a custom method in the
+    sprite browser view."""
+    
     def onConfigurationChanged(self, config):
     
         Activity.onConfigurationChanged(self, config)
         self.spriteBrowser.updateLayout(config.screenWidthDp)
+    
+    """We reimplement the `onBackPressed` method to change the usual behaviour
+    of the interface. If the view being displayed is the same as the one shown
+    when the application started then the standard behaviour is used. Otherwise
+    we show the file browser."""
     
     def onBackPressed(self):
     
@@ -81,11 +104,20 @@ class SpriteViewerActivity(Activity):
             self.fileBrowser.rescan()
             self.setContentView(self.fileBrowser)
     
+    """The following method is used to handle file open requests from the
+    file browser, responding to them by changing the current view and opening
+    the selected file in the sprite browser."""
+    
     def handleFileOpen(self, file):
     
         self.spriteBrowser.openFile(file)
         self.showing = "sprites"
         self.setContentView(self.spriteBrowser)
+    
+    """The following method is used to handle sprite view requests from the
+    sprite browser. It saves the `Bitmap` passed to the method to a PNG file in
+    the device's external storage. Finally, it broadcasts an intent to request
+    that the newly saved file be displayed by a suitable application."""
     
     def handleSpriteView(self, bitmap):
     
