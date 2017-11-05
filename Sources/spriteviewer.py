@@ -37,10 +37,13 @@ class SpriteViewerActivity(Activity):
 
     __interfaces__ = [FileOpenInterface, SpriteViewInterface]
     
+    __fields__ = {"temp_file": File}
+    
     def __init__(self):
     
         Activity.__init__(self)
         self.showing = "files"
+        self.temp_file = None
     
     def onCreate(self, bundle):
     
@@ -79,6 +82,13 @@ class SpriteViewerActivity(Activity):
     def onPause(self):
     
         Activity.onPause(self)
+    
+    def onStop(self):
+    
+        Activity.onStop(self)
+        
+        if self.temp_file != None:
+            self.temp_file.delete()
     
     """The following method is used to respond to configuration changes, such
     as those caused by an orientation change, calling a custom method in the
@@ -121,15 +131,16 @@ class SpriteViewerActivity(Activity):
     
     def handleSpriteView(self, bitmap):
     
-        file = Files.createExternalFile(Environment.DIRECTORY_DOWNLOADS,
+        self.temp_file = Files.createExternalFile(Environment.DIRECTORY_DOWNLOADS,
             "SpriteViewer", "temp", "", ".png")
         
-        stream = BufferedOutputStream(FileOutputStream(file))
+        stream = BufferedOutputStream(FileOutputStream(self.temp_file))
         bitmap.compress(Bitmap.CompressFormat.PNG, 50, stream)
         stream.flush()
         # Closing the file with close() will cause an exception.
         
         intent = Intent()
         intent.setAction(Intent.ACTION_VIEW)
-        intent.setDataAndType(Uri.parse("file://" + file.getPath()), "image/png")
+        intent.setDataAndType(Uri.parse("file://" + self.temp_file.getPath()),
+                              "image/png")
         self.startActivity(intent)
