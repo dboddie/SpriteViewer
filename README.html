@@ -118,5 +118,31 @@ will cause the viewer to exit.</p>
 <h2>Documentation</h2>
 <p>Much of the code contains inline documentation that has been processed and
 placed in the <code>Docs</code> directory. The <a href="Docs/spriteviewer.html">spriteviewer</a>
-module is probably the best place to start reading.</p></body>
+module is probably the best place to start reading.</p>
+<h2>Building the application</h2>
+<p>The application is written in the Serpentine language which requires the
+<a href="http://www.boddie.org.uk/david/Projects/Python/DUCK/README.html">DUCK</a>
+software to be installed or on the <code>PYTHONPATH</code>. Additionally, you will need
+to have created a key and signing certificate in order to create an installable
+package.</p>
+<p>The <code>build.py</code> script supplied with the application can then be run in the
+following way, where <code>&lt;key.pem&gt;</code> and <code>&lt;cert.pem&gt;</code> are the locations of your
+key and certificate files:</p><div class="highlight"><pre>./build.py &lt;key.pem&gt; &lt;cert.pem&gt; SpriteViewer.apk
+</pre></div>
+<p>You can then install the package on your Android device in the usual way.</p>
+<h2>License</h2>
+<p>The source code is licensed under the GNU General Public License version 3 or
+later. See the COPYING file for more information about this license. A short
+version of the license is given below:</p>
+<p>Copyright (C) 2017 David Boddie <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#100;&#97;&#118;&#105;&#100;&#64;&#98;&#111;&#100;&#100;&#105;&#101;&#46;&#111;&#114;&#103;&#46;&#117;&#107;">&#100;&#97;&#118;&#105;&#100;&#64;&#98;&#111;&#100;&#100;&#105;&#101;&#46;&#111;&#114;&#103;&#46;&#117;&#107;</a></p>
+<p>This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.</p>
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.</p>
+<p>You should have received a copy of the GNU General Public License
+along with this program.  If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>.</p></body>
 </html>

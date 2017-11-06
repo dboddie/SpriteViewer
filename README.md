@@ -35,3 +35,44 @@ Documentation
 Much of the code contains inline documentation that has been processed and
 placed in the `Docs` directory. The [spriteviewer](Docs/spriteviewer.html)
 module is probably the best place to start reading.
+
+Building the application
+------------------------
+
+The application is written in the Serpentine language which requires the
+[DUCK](http://www.boddie.org.uk/david/Projects/Python/DUCK/README.html)
+software to be installed or on the `PYTHONPATH`. Additionally, you will need
+to have created a key and signing certificate in order to create an installable
+package.
+
+The `build.py` script supplied with the application can then be run in the
+following way, where `<key.pem>` and `<cert.pem>` are the locations of your
+key and certificate files:
+
+```\
+./build.py <key.pem> <cert.pem> SpriteViewer.apk
+```
+
+You can then install the package on your Android device in the usual way.
+
+License
+-------
+
+The source code is licensed under the GNU General Public License version 3 or
+later. See the COPYING file for more information about this license. A short
+version of the license is given below:
+
+Copyright (C) 2017 David Boddie <david@boddie.org.uk>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
