@@ -1,0 +1,528 @@
+<html>
+<head>
+<title>spritebrowser Example</title>
+<style type="text/css">
+.hll { background-color: #ffffcc }
+.c { color: #888888 } /* Comment */
+.err { color: #FF0000; background-color: #FFAAAA } /* Error */
+.k { color: #008800; font-weight: bold } /* Keyword */
+.o { color: #333333 } /* Operator */
+.cm { color: #888888 } /* Comment.Multiline */
+.cp { color: #557799 } /* Comment.Preproc */
+.c1 { color: #888888 } /* Comment.Single */
+.cs { color: #cc0000; font-weight: bold } /* Comment.Special */
+.gd { color: #A00000 } /* Generic.Deleted */
+.ge { font-style: italic } /* Generic.Emph */
+.gr { color: #FF0000 } /* Generic.Error */
+.gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.gi { color: #00A000 } /* Generic.Inserted */
+.go { color: #888888 } /* Generic.Output */
+.gp { color: #c65d09; font-weight: bold } /* Generic.Prompt */
+.gs { font-weight: bold } /* Generic.Strong */
+.gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.gt { color: #0044DD } /* Generic.Traceback */
+.kc { color: #008800; font-weight: bold } /* Keyword.Constant */
+.kd { color: #008800; font-weight: bold } /* Keyword.Declaration */
+.kn { color: #008800; font-weight: bold } /* Keyword.Namespace */
+.kp { color: #003388; font-weight: bold } /* Keyword.Pseudo */
+.kr { color: #008800; font-weight: bold } /* Keyword.Reserved */
+.kt { color: #333399; font-weight: bold } /* Keyword.Type */
+.m { color: #6600EE; font-weight: bold } /* Literal.Number */
+.s { background-color: #fff0f0 } /* Literal.String */
+.na { color: #0000CC } /* Name.Attribute */
+.nb { color: #007020 } /* Name.Builtin */
+.nc { color: #BB0066; font-weight: bold } /* Name.Class */
+.no { color: #003366; font-weight: bold } /* Name.Constant */
+.nd { color: #555555; font-weight: bold } /* Name.Decorator */
+.ni { color: #880000; font-weight: bold } /* Name.Entity */
+.ne { color: #FF0000; font-weight: bold } /* Name.Exception */
+.nf { color: #0066BB; font-weight: bold } /* Name.Function */
+.nl { color: #997700; font-weight: bold } /* Name.Label */
+.nn { color: #0e84b5; font-weight: bold } /* Name.Namespace */
+.nt { color: #007700 } /* Name.Tag */
+.nv { color: #996633 } /* Name.Variable */
+.ow { color: #000000; font-weight: bold } /* Operator.Word */
+.w { color: #bbbbbb } /* Text.Whitespace */
+.mb { color: #6600EE; font-weight: bold } /* Literal.Number.Bin */
+.mf { color: #6600EE; font-weight: bold } /* Literal.Number.Float */
+.mh { color: #005588; font-weight: bold } /* Literal.Number.Hex */
+.mi { color: #0000DD; font-weight: bold } /* Literal.Number.Integer */
+.mo { color: #4400EE; font-weight: bold } /* Literal.Number.Oct */
+.sb { background-color: #fff0f0 } /* Literal.String.Backtick */
+.sc { color: #0044DD } /* Literal.String.Char */
+.sd { color: #DD4422 } /* Literal.String.Doc */
+.s2 { background-color: #fff0f0 } /* Literal.String.Double */
+.se { color: #666666; font-weight: bold; background-color: #fff0f0 } /* Literal.String.Escape */
+.sh { background-color: #fff0f0 } /* Literal.String.Heredoc */
+.si { background-color: #eeeeee } /* Literal.String.Interpol */
+.sx { color: #DD2200; background-color: #fff0f0 } /* Literal.String.Other */
+.sr { color: #000000; background-color: #fff0ff } /* Literal.String.Regex */
+.s1 { background-color: #fff0f0 } /* Literal.String.Single */
+.ss { color: #AA6600 } /* Literal.String.Symbol */
+.bp { color: #007020 } /* Name.Builtin.Pseudo */
+.vc { color: #336699 } /* Name.Variable.Class */
+.vg { color: #dd7700; font-weight: bold } /* Name.Variable.Global */
+.vi { color: #3333BB } /* Name.Variable.Instance */
+.il { color: #0000DD; font-weight: bold } /* Literal.Number.Integer.Long */
+.highlight pre {
+  background: #f0f0f0;
+  padding: 0.5em;
+  border-left: 1px solid #a0a0a0;
+  border-right: 1px solid #a0a0a0;
+  border-top: 1px dashed #c0c0c0;
+  border-bottom: 1px dashed #c0c0c0
+}
+
+.navbar {
+  background: #e0e8f0;
+  padding-top: 0.25em;
+  padding-bottom: 0.25em
+}
+
+.navbar span {
+  float: left;
+  text-align: center;
+  width: 33%
+}
+
+h1 {
+  text-align: center
+}
+</style>
+</head>
+<body>
+<h1>Sprite Viewer</h1>
+
+
+<div class="highlight"><pre><span class="c"># Copyright (C) 2017 David Boddie &lt;david@boddie.org.uk&gt;</span>
+<span class="c">#</span>
+<span class="c"># This program is free software: you can redistribute it and/or modify</span>
+<span class="c"># it under the terms of the GNU General Public License as published by</span>
+<span class="c"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c"># (at your option) any later version.</span>
+<span class="c">#</span>
+<span class="c"># This program is distributed in the hope that it will be useful,</span>
+<span class="c"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c"># GNU General Public License for more details.</span>
+<span class="c">#</span>
+<span class="c"># You should have received a copy of the GNU General Public License</span>
+<span class="c"># along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+</pre></div>
+
+<p>The <code>spritebrowser</code> module provides classes for displaying the contents of
+spritefiles.</p>
+
+<div class="highlight"><pre><span class="kn">from</span> <span class="nn">java.io</span> <span class="kn">import</span> <span class="n">File</span>
+<span class="kn">from</span> <span class="nn">java.lang</span> <span class="kn">import</span> <span class="n">Byte</span><span class="p">,</span> <span class="n">Math</span><span class="p">,</span> <span class="n">Object</span><span class="p">,</span> <span class="n">String</span>
+<span class="kn">from</span> <span class="nn">java.nio</span> <span class="kn">import</span> <span class="n">ByteBuffer</span>
+<span class="kn">from</span> <span class="nn">java.util</span> <span class="kn">import</span> <span class="n">Collections</span><span class="p">,</span> <span class="n">LinkedList</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Map</span><span class="p">,</span> <span class="n">Queue</span>
+
+<span class="kn">from</span> <span class="nn">android.graphics</span> <span class="kn">import</span> <span class="n">Bitmap</span><span class="p">,</span> <span class="n">Canvas</span><span class="p">,</span> <span class="n">Color</span><span class="p">,</span> <span class="n">Paint</span><span class="p">,</span> \
+                             <span class="n">PorterDuff</span><span class="p">,</span> <span class="n">PorterDuffXfermode</span>
+<span class="kn">from</span> <span class="nn">android.os</span> <span class="kn">import</span> <span class="n">AsyncTask</span>
+<span class="kn">from</span> <span class="nn">android.view</span> <span class="kn">import</span> <span class="n">View</span><span class="p">,</span> <span class="n">ViewGroup</span>
+<span class="kn">from</span> <span class="nn">android.widget</span> <span class="kn">import</span> <span class="n">AdapterView</span><span class="p">,</span> <span class="n">BaseAdapter</span><span class="p">,</span> <span class="n">ImageView</span><span class="p">,</span> <span class="n">GridView</span><span class="p">,</span> \
+                           <span class="n">LinearLayout</span><span class="p">,</span> <span class="n">TextView</span>
+
+<span class="kn">from</span> <span class="nn">spritefile</span> <span class="kn">import</span> <span class="n">Spritefile</span>
+</pre></div>
+
+<p>We define an interface that classes can implement to indicate that they can
+handle the action of viewing a sprite. The <code>handleSpriteView</code> method they
+implement accepts the <code>Bitmap</code> representation of the sprite which can be
+displayed or sent to a suitable component.</p>
+
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">SpriteViewInterface</span><span class="p">:</span>
+
+    <span class="nd">@args</span><span class="p">(</span><span class="n">void</span><span class="p">,</span> <span class="p">[</span><span class="n">Bitmap</span><span class="p">])</span>
+    <span class="k">def</span> <span class="nf">handleSpriteView</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bitmap</span><span class="p">):</span>
+        <span class="k">pass</span>
+</pre></div>
+
+<p>We define a class to represent an entry in the cache that is used by the
+<code>SpriteAdapter</code> class. It holds the name of a sprite and its bitmap
+representation.</p>
+
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">CacheEntry</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
+
+    <span class="n">__fields__</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span> <span class="s">&quot;bitmap&quot;</span><span class="p">:</span> <span class="n">Bitmap</span><span class="p">}</span>
+    
+    <span class="nd">@args</span><span class="p">(</span><span class="n">void</span><span class="p">,</span> <span class="p">[</span><span class="n">String</span><span class="p">,</span> <span class="n">Bitmap</span><span class="p">])</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bitmap</span><span class="p">):</span>
+    
+        <span class="n">Object</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bitmap</span> <span class="o">=</span> <span class="n">bitmap</span>
+</pre></div>
+
+<p>The following class exposes the contents of a spritefile to instances of
+<code>AdapterView</code> subclasses, such as <code>ListView</code> or <code>GridView</code>. It defines a
+constant preview size for the sprites that it represents, scaling each sprite
+to fit within a square with sides of this length.</p>
+<p>The class uses a cache with a constant maximum size to avoid having to render
+sprites each time an item is requested by a view. Sprite rendering is performed
+asynchronously using the <code>AsyncTask</code> class.</p>
+
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">SpriteAdapter</span><span class="p">(</span><span class="n">BaseAdapter</span><span class="p">):</span>
+
+    <span class="n">__fields__</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&quot;spritefile&quot;</span><span class="p">:</span> <span class="n">Spritefile</span><span class="p">,</span>
+        <span class="s">&quot;items&quot;</span><span class="p">:</span> <span class="n">List</span><span class="p">(</span><span class="n">String</span><span class="p">),</span>
+        <span class="s">&quot;cache&quot;</span><span class="p">:</span> <span class="n">Map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">CacheEntry</span><span class="p">),</span>
+        <span class="s">&quot;name_cache&quot;</span><span class="p">:</span> <span class="n">Map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">String</span><span class="p">),</span>
+        <span class="s">&quot;positions&quot;</span><span class="p">:</span> <span class="n">Queue</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+        <span class="p">}</span>
+    
+    <span class="n">preview_size</span> <span class="o">=</span> <span class="mi">128</span>
+    <span class="n">cache_size</span> <span class="o">=</span> <span class="mi">20</span>
+    
+    <span class="nd">@args</span><span class="p">(</span><span class="n">void</span><span class="p">,</span> <span class="p">[])</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    
+        <span class="n">BaseAdapter</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">spritefile</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">items</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">cache</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">positions</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="nd">@args</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="p">[])</span>
+    <span class="k">def</span> <span class="nf">getCount</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">)</span>
+    
+    <span class="nd">@args</span><span class="p">(</span><span class="n">Object</span><span class="p">,</span> <span class="p">[</span><span class="nb">int</span><span class="p">])</span>
+    <span class="k">def</span> <span class="nf">getItem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">None</span>
+    
+    <span class="nd">@args</span><span class="p">(</span><span class="nb">long</span><span class="p">,</span> <span class="p">[</span><span class="nb">int</span><span class="p">])</span>
+    <span class="k">def</span> <span class="nf">getItemId</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">long</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+
+<p>We implement the <code>getView</code> method to provide a <code>LinearLayout</code> view for
+each item, containing an <code>ImageView</code> and a <code>TextView</code>. For sprites in the
+cache, we obtain a <code>Bitmap</code> and include it in the layout. Sprites that
+need to be rendered are represented by a placeholder <code>Bitmap</code> and a
+background task is started to render the sprite. When rendering is
+complete, the <code>SpriteRenderer</code> object that performs the task will update
+the <code>ImageView</code> with a new <code>Bitmap</code>.</p>
+
+<div class="highlight"><pre>    <span class="nd">@args</span><span class="p">(</span><span class="n">View</span><span class="p">,</span> <span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">View</span><span class="p">,</span> <span class="n">ViewGroup</span><span class="p">])</span>
+    <span class="k">def</span> <span class="nf">getView</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">convertView</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+    
+        <span class="n">context</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">getContext</span><span class="p">()</span>
+        
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">LinearLayout</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">setOrientation</span><span class="p">(</span><span class="n">LinearLayout</span><span class="o">.</span><span class="n">VERTICAL</span><span class="p">)</span>
+        
+        <span class="n">imageView</span> <span class="o">=</span> <span class="n">ImageView</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">containsKey</span><span class="p">(</span><span class="n">position</span><span class="p">):</span>
+            <span class="n">entry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">[</span><span class="n">position</span><span class="p">]</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">entry</span><span class="o">.</span><span class="n">name</span>
+            <span class="n">bitmap</span> <span class="o">=</span> <span class="n">entry</span><span class="o">.</span><span class="n">bitmap</span>
+            <span class="n">imageView</span><span class="o">.</span><span class="n">setImageBitmap</span><span class="p">(</span><span class="n">bitmap</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">cache_size</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">remove</span><span class="p">())</span>
+        
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">[</span><span class="n">position</span><span class="p">]</span>
+            <span class="n">renderer</span> <span class="o">=</span> <span class="n">SpriteRenderer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spritefile</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">imageView</span><span class="p">,</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span>
+            
+            <span class="c"># Create a placeholder bitmap to put into the view.</span>
+            <span class="n">bitmap</span> <span class="o">=</span> <span class="n">renderer</span><span class="o">.</span><span class="n">emptyBitmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">preview_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">preview_size</span><span class="p">,</span>
+                                          <span class="bp">False</span><span class="p">)</span>
+            <span class="n">imageView</span><span class="o">.</span><span class="n">setImageBitmap</span><span class="p">(</span><span class="n">bitmap</span><span class="p">)</span>
+            
+            <span class="c"># Create a list then convert it to an array. The initial list</span>
+            <span class="c"># creation causes the items to be wrapped in Integer objects.</span>
+            <span class="n">renderer</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">preview_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">preview_size</span><span class="p">,</span>
+                                    <span class="n">position</span><span class="p">]))</span>
+        
+        <span class="n">textView</span> <span class="o">=</span> <span class="n">TextView</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+        <span class="n">textView</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">textView</span><span class="o">.</span><span class="n">setGravity</span><span class="p">(</span><span class="mh">0x01</span><span class="p">)</span> <span class="c"># center_horizontal</span>
+        
+        <span class="n">layout</span><span class="o">.</span><span class="n">addView</span><span class="p">(</span><span class="n">imageView</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addView</span><span class="p">(</span><span class="n">textView</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">layout</span>
+</pre></div>
+
+<p>This method is used to tell the adapter which file to examine. We create
+a <code>Spritefile</code> object for the given file and read the names of the sprites
+it contains. We also clear the structures used to hold cache information.</p>
+
+<div class="highlight"><pre>    <span class="nd">@args</span><span class="p">(</span><span class="n">void</span><span class="p">,</span> <span class="p">[</span><span class="n">File</span><span class="p">])</span>
+    <span class="k">def</span> <span class="nf">setFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
+    
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">spritefile</span> <span class="o">=</span> <span class="n">Spritefile</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">items</span> <span class="o">=</span> <span class="n">LinkedList</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spritefile</span><span class="o">.</span><span class="n">sprites</span><span class="o">.</span><span class="n">keySet</span><span class="p">())</span>
+            <span class="n">Collections</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">items</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">cache</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">positions</span> <span class="o">=</span> <span class="p">[]</span>
+</pre></div>
+
+<p>This method is used to obtain a <code>Bitmap</code> for a sprite at a given
+position in the list of items held by the adapter.</p>
+
+<div class="highlight"><pre>    <span class="nd">@args</span><span class="p">(</span><span class="n">Bitmap</span><span class="p">,</span> <span class="p">[</span><span class="nb">int</span><span class="p">])</span>
+    <span class="k">def</span> <span class="nf">getSpriteBitmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">):</span>
+    
+        <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">[</span><span class="n">position</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">SpriteRenderer</span><span class="o">.</span><span class="n">getSpriteBitmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spritefile</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+</pre></div>
+
+<p>The following class is used to render each sprite asynchronously in a
+background thread.</p>
+
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">SpriteRenderer</span><span class="p">(</span><span class="n">AsyncTask</span><span class="p">):</span>
+
+    <span class="n">__item_types__</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Bitmap</span><span class="p">,</span> <span class="n">Bitmap</span><span class="p">]</span>
+</pre></div>
+
+<p>The <code>__init__</code> method accepts the sprite to render, the <code>ImageView</code> used
+to display the resulting bitmap, a <code>Map</code> that contains cached bitmaps for
+sprites already rendered, and a queue of keys for bitmaps in the cache.</p>
+
+<div class="highlight"><pre>    <span class="nd">@args</span><span class="p">(</span><span class="n">void</span><span class="p">,</span> <span class="p">[</span><span class="n">Spritefile</span><span class="p">,</span> <span class="n">String</span><span class="p">,</span> <span class="n">ImageView</span><span class="p">,</span> <span class="n">Map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">CacheEntry</span><span class="p">),</span> <span class="n">Queue</span><span class="p">(</span><span class="nb">int</span><span class="p">)])</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spritefile</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">imageView</span><span class="p">,</span> <span class="n">cache</span><span class="p">,</span> <span class="n">queue</span><span class="p">):</span>
+    
+        <span class="n">AsyncTask</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">spritefile</span> <span class="o">=</span> <span class="n">spritefile</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imageView</span> <span class="o">=</span> <span class="n">imageView</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cache</span> <span class="o">=</span> <span class="n">cache</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queue</span> <span class="o">=</span> <span class="n">queue</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">paint</span> <span class="o">=</span> <span class="n">Paint</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">paint</span><span class="o">.</span><span class="n">setXfermode</span><span class="p">(</span><span class="n">PorterDuffXfermode</span><span class="p">(</span><span class="n">PorterDuff</span><span class="o">.</span><span class="n">Mode</span><span class="o">.</span><span class="n">SRC_OVER</span><span class="p">))</span>
+</pre></div>
+
+<p>We define a method to conveniently create new empty bitmaps.</p>
+
+<div class="highlight"><pre>    <span class="nd">@args</span><span class="p">(</span><span class="n">Bitmap</span><span class="p">,</span> <span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">])</span>
+    <span class="k">def</span> <span class="nf">emptyBitmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">ready</span><span class="p">):</span>
+    
+        <span class="n">bitmap</span> <span class="o">=</span> <span class="n">Bitmap</span><span class="o">.</span><span class="n">createBitmap</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">Bitmap</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">ARGB_8888</span><span class="p">)</span>
+        <span class="n">canvas</span> <span class="o">=</span> <span class="n">Canvas</span><span class="p">(</span><span class="n">bitmap</span><span class="p">)</span>
+        <span class="n">paint</span> <span class="o">=</span> <span class="n">Paint</span><span class="p">()</span>
+        <span class="n">paint</span><span class="o">.</span><span class="n">setXfermode</span><span class="p">(</span><span class="n">PorterDuffXfermode</span><span class="p">(</span><span class="n">PorterDuff</span><span class="o">.</span><span class="n">Mode</span><span class="o">.</span><span class="n">SRC</span><span class="p">))</span>
+        
+        <span class="k">if</span> <span class="n">ready</span><span class="p">:</span>
+            <span class="n">b1</span> <span class="o">=</span> <span class="n">Color</span><span class="o">.</span><span class="n">argb</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="mi">96</span><span class="p">)</span>
+            <span class="n">b2</span> <span class="o">=</span> <span class="n">Color</span><span class="o">.</span><span class="n">argb</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">b1</span> <span class="o">=</span> <span class="n">Color</span><span class="o">.</span><span class="n">argb</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">)</span>
+            <span class="n">b2</span> <span class="o">=</span> <span class="n">Color</span><span class="o">.</span><span class="n">argb</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>
+        
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="mi">16</span><span class="p">):</span>
+        
+            <span class="n">j</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">i</span>
+            
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="mi">16</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">paint</span><span class="o">.</span><span class="n">setColor</span><span class="p">(</span><span class="n">b1</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">paint</span><span class="o">.</span><span class="n">setColor</span><span class="p">(</span><span class="n">b2</span><span class="p">)</span>
+                
+                <span class="n">canvas</span><span class="o">.</span><span class="n">drawRect</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">16</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="mi">16</span><span class="p">,</span> <span class="n">paint</span><span class="p">)</span>
+                <span class="n">j</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">j</span>
+            
+            <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">i</span>
+        
+        <span class="k">return</span> <span class="n">bitmap</span>
+</pre></div>
+
+<p>We define a method to obtain a sprite from the spritefile. This is
+potentially a slow operation, which is why it is called by the
+<code>doInBackground</code> method below.</p>
+
+<div class="highlight"><pre>    <span class="nd">@args</span><span class="p">(</span><span class="n">Bitmap</span><span class="p">,</span> <span class="p">[])</span>
+    <span class="k">def</span> <span class="nf">getSpriteBitmap</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getSpriteBitmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spritefile</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    
+    <span class="nd">@static</span>
+    <span class="nd">@args</span><span class="p">(</span><span class="n">Bitmap</span><span class="p">,</span> <span class="p">[</span><span class="n">Spritefile</span><span class="p">,</span> <span class="n">String</span><span class="p">])</span>
+    <span class="k">def</span> <span class="nf">getSpriteBitmap</span><span class="p">(</span><span class="n">spritefile</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    
+        <span class="n">sprite</span> <span class="o">=</span> <span class="n">spritefile</span><span class="o">.</span><span class="n">getSprite</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        
+        <span class="n">bitmap</span> <span class="o">=</span> <span class="n">Bitmap</span><span class="o">.</span><span class="n">createBitmap</span><span class="p">(</span><span class="n">sprite</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">sprite</span><span class="o">.</span><span class="n">height</span><span class="p">,</span> <span class="n">Bitmap</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">ARGB_8888</span><span class="p">)</span>
+        <span class="n">bitmap</span><span class="o">.</span><span class="n">copyPixelsFromBuffer</span><span class="p">(</span><span class="n">ByteBuffer</span><span class="o">.</span><span class="n">wrap</span><span class="p">(</span><span class="n">sprite</span><span class="o">.</span><span class="n">rgba</span><span class="p">))</span>
+        
+        <span class="k">if</span> <span class="n">sprite</span><span class="o">.</span><span class="n">ydpi</span> <span class="o">&lt;</span> <span class="n">sprite</span><span class="o">.</span><span class="n">xdpi</span><span class="p">:</span>
+            <span class="n">yscale</span> <span class="o">=</span> <span class="n">sprite</span><span class="o">.</span><span class="n">xdpi</span><span class="o">/</span><span class="n">sprite</span><span class="o">.</span><span class="n">ydpi</span>
+            <span class="n">bitmap</span> <span class="o">=</span> <span class="n">Bitmap</span><span class="o">.</span><span class="n">createScaledBitmap</span><span class="p">(</span><span class="n">bitmap</span><span class="p">,</span> <span class="n">bitmap</span><span class="o">.</span><span class="n">getWidth</span><span class="p">(),</span>
+                <span class="n">bitmap</span><span class="o">.</span><span class="n">getHeight</span><span class="p">()</span> <span class="o">*</span> <span class="n">yscale</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">bitmap</span>
+</pre></div>
+
+<p>The following method performs work in a background thread. It accepts
+an array of the <code>Params</code> type, which we defined above as <code>int</code>, so it will
+receive an array of integers which describe the width and height of each
+bitmap to create, as well as the position of the bitmap in the adapter that
+uses the <code>SpriteRenderer</code>. The position is used as a key into the <code>Map</code> we
+use as a cache.</p>
+
+<div class="highlight"><pre>    <span class="nd">@args</span><span class="p">(</span><span class="n">Result</span><span class="p">,</span> <span class="p">[[</span><span class="n">Params</span><span class="p">]])</span>
+    <span class="k">def</span> <span class="nf">doInBackground</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+    
+        <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">params</span>
+        
+        <span class="n">bitmap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getSpriteBitmap</span><span class="p">()</span>
+        
+        <span class="n">width</span> <span class="o">=</span> <span class="n">bitmap</span><span class="o">.</span><span class="n">getWidth</span><span class="p">()</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="n">bitmap</span><span class="o">.</span><span class="n">getHeight</span><span class="p">()</span>
+        
+        <span class="n">xscale</span> <span class="o">=</span> <span class="n">w</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">width</span><span class="p">)</span>
+        <span class="n">yscale</span> <span class="o">=</span> <span class="n">h</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">height</span><span class="p">)</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="n">Math</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">xscale</span><span class="p">,</span> <span class="n">yscale</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">scale</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">sw</span> <span class="o">=</span> <span class="n">Math</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">scale</span> <span class="o">*</span> <span class="n">width</span><span class="p">)</span>
+            <span class="n">sh</span> <span class="o">=</span> <span class="n">Math</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">scale</span> <span class="o">*</span> <span class="n">height</span><span class="p">)</span>
+            
+            <span class="n">bitmap</span> <span class="o">=</span> <span class="n">Bitmap</span><span class="o">.</span><span class="n">createScaledBitmap</span><span class="p">(</span><span class="n">bitmap</span><span class="p">,</span> <span class="n">sw</span><span class="p">,</span> <span class="n">sh</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+        
+        <span class="k">elif</span> <span class="n">scale</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">Math</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">Math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">scale</span><span class="p">)),</span> <span class="mi">3</span><span class="p">)</span>
+            <span class="n">sw</span> <span class="o">=</span> <span class="n">Math</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">s</span> <span class="o">*</span> <span class="n">width</span><span class="p">)</span>
+            <span class="n">sh</span> <span class="o">=</span> <span class="n">Math</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">s</span> <span class="o">*</span> <span class="n">height</span><span class="p">)</span>
+            <span class="n">bitmap</span> <span class="o">=</span> <span class="n">Bitmap</span><span class="o">.</span><span class="n">createScaledBitmap</span><span class="p">(</span><span class="n">bitmap</span><span class="p">,</span> <span class="n">sw</span><span class="p">,</span> <span class="n">sh</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+        
+        <span class="n">preview</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">emptyBitmap</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+        
+        <span class="n">canvas</span> <span class="o">=</span> <span class="n">Canvas</span><span class="p">(</span><span class="n">preview</span><span class="p">)</span>
+        <span class="n">canvas</span><span class="o">.</span><span class="n">drawBitmap</span><span class="p">(</span><span class="n">bitmap</span><span class="p">,</span> <span class="p">(</span><span class="n">w</span> <span class="o">-</span> <span class="n">bitmap</span><span class="o">.</span><span class="n">getWidth</span><span class="p">())</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+            <span class="p">(</span><span class="n">h</span> <span class="o">-</span> <span class="n">bitmap</span><span class="o">.</span><span class="n">getHeight</span><span class="p">())</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">paint</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">preview</span>
+</pre></div>
+
+<p>As each sprite is drawn it is possible to report progress to the
+adapter that started this task. In this application we don't take
+advantage of this feature so the following method does nothing.</p>
+
+<div class="highlight"><pre>    <span class="nd">@args</span><span class="p">(</span><span class="n">void</span><span class="p">,</span> <span class="p">[[</span><span class="n">Progress</span><span class="p">]])</span>
+    <span class="k">def</span> <span class="nf">onProgressUpdate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">progress</span><span class="p">):</span>
+    
+        <span class="k">pass</span>
+</pre></div>
+
+<p>When all processing has finished, the following method is called by the
+application framework to allow the final result to be handled in the main
+UI thread. We update the bitmap cache with the new bitmap and add its
+position to the queue of keys to the cache. Then we update the <code>ImageView</code>
+to show the finished bitmap.</p>
+
+<div class="highlight"><pre>    <span class="nd">@args</span><span class="p">(</span><span class="n">void</span><span class="p">,</span> <span class="p">[</span><span class="n">Result</span><span class="p">])</span>
+    <span class="k">def</span> <span class="nf">onPostExecute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+    
+        <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">]</span> <span class="o">=</span> <span class="n">CacheEntry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">imageView</span><span class="o">.</span><span class="n">setImageBitmap</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</pre></div>
+
+<p>The following class provides a <code>View</code> that encapsulates both the adapter
+that supplies rendered sprites and a grid in which to display them. It allows
+registration of a handler that implements the <code>SpriteViewInterface</code> and will
+call the method defined in that interface for sprites that are selected using
+a long click. This mechanism is how sprite view requests are communicated to
+the main activity.</p>
+
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">SpriteBrowser</span><span class="p">(</span><span class="n">LinearLayout</span><span class="p">):</span>
+
+    <span class="n">__interfaces__</span> <span class="o">=</span> <span class="p">[</span><span class="n">AdapterView</span><span class="o">.</span><span class="n">OnItemLongClickListener</span><span class="p">]</span>
+    <span class="n">__fields__</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;handler&quot;</span><span class="p">:</span> <span class="n">SpriteViewInterface</span><span class="p">}</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+    
+        <span class="n">LinearLayout</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">handler</span> <span class="o">=</span> <span class="bp">None</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">spriteAdapter</span> <span class="o">=</span> <span class="n">SpriteAdapter</span><span class="p">()</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">GridView</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">setHorizontalSpacing</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">setVerticalSpacing</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">setNumColumns</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">setAdapter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spriteAdapter</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">setOnItemLongClickListener</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addView</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="p">)</span>
+</pre></div>
+
+<p>This method ensures that the view displays a reasonable number of
+columns in the grid when it is first shown.</p>
+
+<div class="highlight"><pre>    <span class="k">def</span> <span class="nf">onSizeChanged</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">oldWidth</span><span class="p">,</span> <span class="n">oldHeight</span><span class="p">):</span>
+    
+        <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">setNumColumns</span><span class="p">(</span><span class="n">width</span><span class="o">/</span><span class="n">SpriteAdapter</span><span class="o">.</span><span class="n">preview_size</span><span class="p">)</span>
+</pre></div>
+
+<p>This method is used to help the view adapt to configuration changes
+due to reorientation of the device running the application. It simply
+uses the size of the screen to determine how many columns can be shown.</p>
+
+<div class="highlight"><pre>    <span class="nd">@args</span><span class="p">(</span><span class="n">void</span><span class="p">,</span> <span class="p">[</span><span class="nb">int</span><span class="p">])</span>
+    <span class="k">def</span> <span class="nf">updateLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">screenWidthDp</span><span class="p">):</span>
+    
+        <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">setNumColumns</span><span class="p">(</span><span class="n">screenWidthDp</span><span class="o">/</span><span class="n">SpriteAdapter</span><span class="o">.</span><span class="n">preview_size</span><span class="p">)</span>
+</pre></div>
+
+<p>In this method we acknowledge a long click on a sprite in the grid,
+obtain a <code>Bitmap</code> for the sprite and call the appropriate method of the
+registered handler object.</p>
+
+<div class="highlight"><pre>    <span class="nd">@args</span><span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="p">[</span><span class="n">AdapterView</span><span class="p">,</span> <span class="n">View</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">long</span><span class="p">])</span>
+    <span class="k">def</span> <span class="nf">onItemLongClick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+    
+        <span class="n">bitmap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spriteAdapter</span><span class="o">.</span><span class="n">getSpriteBitmap</span><span class="p">(</span><span class="n">position</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="o">.</span><span class="n">handleSpriteView</span><span class="p">(</span><span class="n">bitmap</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="bp">True</span>
+</pre></div>
+
+<p>The following method handles registration of an object that implements
+the <code>SpriteViewInterface</code> interface.</p>
+
+<div class="highlight"><pre>    <span class="nd">@args</span><span class="p">(</span><span class="n">void</span><span class="p">,</span> <span class="p">[</span><span class="n">SpriteViewInterface</span><span class="p">])</span>
+    <span class="k">def</span> <span class="nf">setHandler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handler</span><span class="p">):</span>
+    
+        <span class="bp">self</span><span class="o">.</span><span class="n">handler</span> <span class="o">=</span> <span class="n">handler</span>
+</pre></div>
+
+<p>The main activity calls this method to tell the browser to display the
+contents of the given file. We simply update the adapter to use the new
+file and refresh the grid by passing the adapter to it.</p>
+
+<div class="highlight"><pre>    <span class="nd">@args</span><span class="p">(</span><span class="n">void</span><span class="p">,</span> <span class="p">[</span><span class="n">File</span><span class="p">])</span>
+    <span class="k">def</span> <span class="nf">openFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
+    
+        <span class="bp">self</span><span class="o">.</span><span class="n">spriteAdapter</span><span class="o">.</span><span class="n">setFile</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">setAdapter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spriteAdapter</span><span class="p">)</span>
+</pre></div>
+
+<h2>Files</h2>
+<ul>
+<li><a href="../filebrowser.py">filebrowser.py</a></li>
+<li><a href="../spritebrowser.py">spritebrowser.py</a></li>
+<li><a href="../spritefile.py">spritefile.py</a></li>
+<li><a href="../spriteviewer.py">spriteviewer.py</a></li>
+</ul></body>
+</html>

@@ -4,7 +4,7 @@ Sprite Viewer
 This application allows RISC OS spritefiles to be opened and their contents
 viewed on Android devices.
 
-![A screenshot of the application](SpriteViewer.png)
+![A screenshot of the application](Docs/SpriteViewer.png)
 
 Opening sprites from the viewer
 -------------------------------
@@ -28,3 +28,10 @@ file to be displayed.
 
 Pressing the device's back button when the viewer has been launched in this way
 will cause the viewer to exit.
+
+Documentation
+-------------
+
+Much of the code contains inline documentation that has been processed and
+placed in the `Docs` directory. The [spriteviewer](Docs/spriteviewer.html)
+module is probably the best place to start reading.

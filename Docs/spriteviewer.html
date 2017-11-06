@@ -1,0 +1,258 @@
+<html>
+<head>
+<title>spriteviewer Example</title>
+<style type="text/css">
+.hll { background-color: #ffffcc }
+.c { color: #888888 } /* Comment */
+.err { color: #FF0000; background-color: #FFAAAA } /* Error */
+.k { color: #008800; font-weight: bold } /* Keyword */
+.o { color: #333333 } /* Operator */
+.cm { color: #888888 } /* Comment.Multiline */
+.cp { color: #557799 } /* Comment.Preproc */
+.c1 { color: #888888 } /* Comment.Single */
+.cs { color: #cc0000; font-weight: bold } /* Comment.Special */
+.gd { color: #A00000 } /* Generic.Deleted */
+.ge { font-style: italic } /* Generic.Emph */
+.gr { color: #FF0000 } /* Generic.Error */
+.gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.gi { color: #00A000 } /* Generic.Inserted */
+.go { color: #888888 } /* Generic.Output */
+.gp { color: #c65d09; font-weight: bold } /* Generic.Prompt */
+.gs { font-weight: bold } /* Generic.Strong */
+.gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.gt { color: #0044DD } /* Generic.Traceback */
+.kc { color: #008800; font-weight: bold } /* Keyword.Constant */
+.kd { color: #008800; font-weight: bold } /* Keyword.Declaration */
+.kn { color: #008800; font-weight: bold } /* Keyword.Namespace */
+.kp { color: #003388; font-weight: bold } /* Keyword.Pseudo */
+.kr { color: #008800; font-weight: bold } /* Keyword.Reserved */
+.kt { color: #333399; font-weight: bold } /* Keyword.Type */
+.m { color: #6600EE; font-weight: bold } /* Literal.Number */
+.s { background-color: #fff0f0 } /* Literal.String */
+.na { color: #0000CC } /* Name.Attribute */
+.nb { color: #007020 } /* Name.Builtin */
+.nc { color: #BB0066; font-weight: bold } /* Name.Class */
+.no { color: #003366; font-weight: bold } /* Name.Constant */
+.nd { color: #555555; font-weight: bold } /* Name.Decorator */
+.ni { color: #880000; font-weight: bold } /* Name.Entity */
+.ne { color: #FF0000; font-weight: bold } /* Name.Exception */
+.nf { color: #0066BB; font-weight: bold } /* Name.Function */
+.nl { color: #997700; font-weight: bold } /* Name.Label */
+.nn { color: #0e84b5; font-weight: bold } /* Name.Namespace */
+.nt { color: #007700 } /* Name.Tag */
+.nv { color: #996633 } /* Name.Variable */
+.ow { color: #000000; font-weight: bold } /* Operator.Word */
+.w { color: #bbbbbb } /* Text.Whitespace */
+.mb { color: #6600EE; font-weight: bold } /* Literal.Number.Bin */
+.mf { color: #6600EE; font-weight: bold } /* Literal.Number.Float */
+.mh { color: #005588; font-weight: bold } /* Literal.Number.Hex */
+.mi { color: #0000DD; font-weight: bold } /* Literal.Number.Integer */
+.mo { color: #4400EE; font-weight: bold } /* Literal.Number.Oct */
+.sb { background-color: #fff0f0 } /* Literal.String.Backtick */
+.sc { color: #0044DD } /* Literal.String.Char */
+.sd { color: #DD4422 } /* Literal.String.Doc */
+.s2 { background-color: #fff0f0 } /* Literal.String.Double */
+.se { color: #666666; font-weight: bold; background-color: #fff0f0 } /* Literal.String.Escape */
+.sh { background-color: #fff0f0 } /* Literal.String.Heredoc */
+.si { background-color: #eeeeee } /* Literal.String.Interpol */
+.sx { color: #DD2200; background-color: #fff0f0 } /* Literal.String.Other */
+.sr { color: #000000; background-color: #fff0ff } /* Literal.String.Regex */
+.s1 { background-color: #fff0f0 } /* Literal.String.Single */
+.ss { color: #AA6600 } /* Literal.String.Symbol */
+.bp { color: #007020 } /* Name.Builtin.Pseudo */
+.vc { color: #336699 } /* Name.Variable.Class */
+.vg { color: #dd7700; font-weight: bold } /* Name.Variable.Global */
+.vi { color: #3333BB } /* Name.Variable.Instance */
+.il { color: #0000DD; font-weight: bold } /* Literal.Number.Integer.Long */
+.highlight pre {
+  background: #f0f0f0;
+  padding: 0.5em;
+  border-left: 1px solid #a0a0a0;
+  border-right: 1px solid #a0a0a0;
+  border-top: 1px dashed #c0c0c0;
+  border-bottom: 1px dashed #c0c0c0
+}
+
+.navbar {
+  background: #e0e8f0;
+  padding-top: 0.25em;
+  padding-bottom: 0.25em
+}
+
+.navbar span {
+  float: left;
+  text-align: center;
+  width: 33%
+}
+
+h1 {
+  text-align: center
+}
+</style>
+</head>
+<body>
+<h1>Sprite Viewer</h1>
+
+
+<div class="highlight"><pre><span class="c"># Copyright (C) 2017 David Boddie &lt;david@boddie.org.uk&gt;</span>
+<span class="c">#</span>
+<span class="c"># This program is free software: you can redistribute it and/or modify</span>
+<span class="c"># it under the terms of the GNU General Public License as published by</span>
+<span class="c"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c"># (at your option) any later version.</span>
+<span class="c">#</span>
+<span class="c"># This program is distributed in the hope that it will be useful,</span>
+<span class="c"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c"># GNU General Public License for more details.</span>
+<span class="c">#</span>
+<span class="c"># You should have received a copy of the GNU General Public License</span>
+<span class="c"># along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+</pre></div>
+
+<p>The <code>spriteviewer</code> module provides the main activity class for the Sprite
+Viewer application.</p>
+
+<div class="highlight"><pre><span class="kn">from</span> <span class="nn">java.io</span> <span class="kn">import</span> <span class="n">BufferedOutputStream</span><span class="p">,</span> <span class="n">File</span><span class="p">,</span> <span class="n">FileOutputStream</span>
+<span class="kn">from</span> <span class="nn">android.content</span> <span class="kn">import</span> <span class="n">Intent</span>
+<span class="kn">from</span> <span class="nn">android.graphics</span> <span class="kn">import</span> <span class="n">Bitmap</span>
+<span class="kn">from</span> <span class="nn">android.os</span> <span class="kn">import</span> <span class="n">Environment</span>
+<span class="kn">from</span> <span class="nn">android.net</span> <span class="kn">import</span> <span class="n">Uri</span>
+
+<span class="kn">from</span> <span class="nn">serpentine.activities</span> <span class="kn">import</span> <span class="n">Activity</span>
+<span class="kn">from</span> <span class="nn">serpentine.files</span> <span class="kn">import</span> <span class="n">Files</span>
+
+<span class="kn">from</span> <span class="nn">filebrowser</span> <span class="kn">import</span> <span class="n">FileBrowser</span><span class="p">,</span> <span class="n">FileOpenInterface</span>
+<span class="kn">from</span> <span class="nn">spritebrowser</span> <span class="kn">import</span> <span class="n">SpriteBrowser</span><span class="p">,</span> <span class="n">SpriteViewInterface</span>
+</pre></div>
+
+<p>The <code>SpriteViewerActivity</code> class represents the application and defines the
+high level parts of the user interface. It also implements interfaces defined
+in the <a href="filebrowser.html">filebrowser</a> and <a href="spritebrowser.html">spritebrowser</a>
+modules.</p>
+
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">SpriteViewerActivity</span><span class="p">(</span><span class="n">Activity</span><span class="p">):</span>
+
+    <span class="n">__interfaces__</span> <span class="o">=</span> <span class="p">[</span><span class="n">FileOpenInterface</span><span class="p">,</span> <span class="n">SpriteViewInterface</span><span class="p">]</span>
+    
+    <span class="n">__fields__</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;temp_file&quot;</span><span class="p">:</span> <span class="n">File</span><span class="p">}</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    
+        <span class="n">Activity</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">showing</span> <span class="o">=</span> <span class="s">&quot;files&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">temp_file</span> <span class="o">=</span> <span class="bp">None</span>
+    
+    <span class="k">def</span> <span class="nf">onCreate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bundle</span><span class="p">):</span>
+    
+        <span class="n">Activity</span><span class="o">.</span><span class="n">onCreate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bundle</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">resources</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getResources</span><span class="p">()</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">fileBrowser</span> <span class="o">=</span> <span class="n">FileBrowser</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fileBrowser</span><span class="o">.</span><span class="n">setHandler</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">spriteBrowser</span> <span class="o">=</span> <span class="n">SpriteBrowser</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spriteBrowser</span><span class="o">.</span><span class="n">setHandler</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">setContentView</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fileBrowser</span><span class="p">)</span>
+        
+        <span class="c"># Obtain the intent that caused the activity to be started and define</span>
+        <span class="c"># the initial view to be displayed.</span>
+        <span class="n">intent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getIntent</span><span class="p">()</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">initial_view</span> <span class="o">=</span> <span class="s">&quot;files&quot;</span>
+        
+        <span class="c"># If the application was started with an intent requesting a view</span>
+        <span class="c"># action then we show the sprite browser instead of the file browser.</span>
+        <span class="k">if</span> <span class="n">intent</span><span class="o">.</span><span class="n">getAction</span><span class="p">()</span> <span class="o">==</span> <span class="n">Intent</span><span class="o">.</span><span class="n">ACTION_VIEW</span><span class="p">:</span>
+        
+            <span class="n">uri</span> <span class="o">=</span> <span class="n">intent</span><span class="o">.</span><span class="n">getData</span><span class="p">()</span>
+            
+            <span class="k">if</span> <span class="n">uri</span><span class="o">.</span><span class="n">getScheme</span><span class="p">()</span> <span class="o">==</span> <span class="s">&quot;file&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">initial_view</span> <span class="o">=</span> <span class="s">&quot;sprites&quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">handleFileOpen</span><span class="p">(</span><span class="n">File</span><span class="p">(</span><span class="n">uri</span><span class="o">.</span><span class="n">getPath</span><span class="p">()))</span>
+    
+    <span class="k">def</span> <span class="nf">onResume</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    
+        <span class="n">Activity</span><span class="o">.</span><span class="n">onResume</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">onPause</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    
+        <span class="n">Activity</span><span class="o">.</span><span class="n">onPause</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">onStop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    
+        <span class="n">Activity</span><span class="o">.</span><span class="n">onStop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">temp_file</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">temp_file</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+</pre></div>
+
+<p>The following method is used to respond to configuration changes, such
+as those caused by an orientation change, calling a custom method in the
+sprite browser view.</p>
+
+<div class="highlight"><pre>    <span class="k">def</span> <span class="nf">onConfigurationChanged</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+    
+        <span class="n">Activity</span><span class="o">.</span><span class="n">onConfigurationChanged</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spriteBrowser</span><span class="o">.</span><span class="n">updateLayout</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">screenWidthDp</span><span class="p">)</span>
+</pre></div>
+
+<p>We reimplement the <code>onBackPressed</code> method to change the usual behaviour
+of the interface. If the view being displayed is the same as the one shown
+when the application started then the standard behaviour is used. Otherwise
+we show the file browser.</p>
+
+<div class="highlight"><pre>    <span class="k">def</span> <span class="nf">onBackPressed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    
+        <span class="c"># If showing the initial view then exit, otherwise show the file browser.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">showing</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">initial_view</span><span class="p">:</span>
+            <span class="n">Activity</span><span class="o">.</span><span class="n">onBackPressed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">showing</span> <span class="o">=</span> <span class="s">&quot;files&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fileBrowser</span><span class="o">.</span><span class="n">rescan</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setContentView</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fileBrowser</span><span class="p">)</span>
+</pre></div>
+
+<p>The following method is used to handle file open requests from the
+file browser, responding to them by changing the current view and opening
+the selected file in the sprite browser.</p>
+
+<div class="highlight"><pre>    <span class="k">def</span> <span class="nf">handleFileOpen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
+    
+        <span class="bp">self</span><span class="o">.</span><span class="n">spriteBrowser</span><span class="o">.</span><span class="n">openFile</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">showing</span> <span class="o">=</span> <span class="s">&quot;sprites&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setContentView</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spriteBrowser</span><span class="p">)</span>
+</pre></div>
+
+<p>The following method is used to handle sprite view requests from the
+sprite browser. It saves the <code>Bitmap</code> passed to the method to a PNG file in
+the device's external storage. Finally, it broadcasts an intent to request
+that the newly saved file be displayed by a suitable application.</p>
+
+<div class="highlight"><pre>    <span class="k">def</span> <span class="nf">handleSpriteView</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bitmap</span><span class="p">):</span>
+    
+        <span class="bp">self</span><span class="o">.</span><span class="n">temp_file</span> <span class="o">=</span> <span class="n">Files</span><span class="o">.</span><span class="n">createExternalFile</span><span class="p">(</span><span class="n">Environment</span><span class="o">.</span><span class="n">DIRECTORY_DOWNLOADS</span><span class="p">,</span>
+            <span class="s">&quot;SpriteViewer&quot;</span><span class="p">,</span> <span class="s">&quot;temp&quot;</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">,</span> <span class="s">&quot;.png&quot;</span><span class="p">)</span>
+        
+        <span class="n">stream</span> <span class="o">=</span> <span class="n">BufferedOutputStream</span><span class="p">(</span><span class="n">FileOutputStream</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">temp_file</span><span class="p">))</span>
+        <span class="n">bitmap</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="n">Bitmap</span><span class="o">.</span><span class="n">CompressFormat</span><span class="o">.</span><span class="n">PNG</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">stream</span><span class="p">)</span>
+        <span class="n">stream</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+        <span class="c"># Closing the file with close() will cause an exception.</span>
+        
+        <span class="n">intent</span> <span class="o">=</span> <span class="n">Intent</span><span class="p">()</span>
+        <span class="n">intent</span><span class="o">.</span><span class="n">setAction</span><span class="p">(</span><span class="n">Intent</span><span class="o">.</span><span class="n">ACTION_VIEW</span><span class="p">)</span>
+        <span class="n">intent</span><span class="o">.</span><span class="n">setDataAndType</span><span class="p">(</span><span class="n">Uri</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">&quot;file://&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">temp_file</span><span class="o">.</span><span class="n">getPath</span><span class="p">()),</span>
+                              <span class="s">&quot;image/png&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">startActivity</span><span class="p">(</span><span class="n">intent</span><span class="p">)</span>
+</pre></div>
+
+<h2>Files</h2>
+<ul>
+<li><a href="../filebrowser.py">filebrowser.py</a></li>
+<li><a href="../spritebrowser.py">spritebrowser.py</a></li>
+<li><a href="../spritefile.py">spritefile.py</a></li>
+<li><a href="../spriteviewer.py">spriteviewer.py</a></li>
+</ul></body>
+</html>

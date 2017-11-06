@@ -1,0 +1,779 @@
+<html>
+<head>
+<title>spritefile Example</title>
+<style type="text/css">
+.hll { background-color: #ffffcc }
+.c { color: #888888 } /* Comment */
+.err { color: #FF0000; background-color: #FFAAAA } /* Error */
+.k { color: #008800; font-weight: bold } /* Keyword */
+.o { color: #333333 } /* Operator */
+.cm { color: #888888 } /* Comment.Multiline */
+.cp { color: #557799 } /* Comment.Preproc */
+.c1 { color: #888888 } /* Comment.Single */
+.cs { color: #cc0000; font-weight: bold } /* Comment.Special */
+.gd { color: #A00000 } /* Generic.Deleted */
+.ge { font-style: italic } /* Generic.Emph */
+.gr { color: #FF0000 } /* Generic.Error */
+.gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.gi { color: #00A000 } /* Generic.Inserted */
+.go { color: #888888 } /* Generic.Output */
+.gp { color: #c65d09; font-weight: bold } /* Generic.Prompt */
+.gs { font-weight: bold } /* Generic.Strong */
+.gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.gt { color: #0044DD } /* Generic.Traceback */
+.kc { color: #008800; font-weight: bold } /* Keyword.Constant */
+.kd { color: #008800; font-weight: bold } /* Keyword.Declaration */
+.kn { color: #008800; font-weight: bold } /* Keyword.Namespace */
+.kp { color: #003388; font-weight: bold } /* Keyword.Pseudo */
+.kr { color: #008800; font-weight: bold } /* Keyword.Reserved */
+.kt { color: #333399; font-weight: bold } /* Keyword.Type */
+.m { color: #6600EE; font-weight: bold } /* Literal.Number */
+.s { background-color: #fff0f0 } /* Literal.String */
+.na { color: #0000CC } /* Name.Attribute */
+.nb { color: #007020 } /* Name.Builtin */
+.nc { color: #BB0066; font-weight: bold } /* Name.Class */
+.no { color: #003366; font-weight: bold } /* Name.Constant */
+.nd { color: #555555; font-weight: bold } /* Name.Decorator */
+.ni { color: #880000; font-weight: bold } /* Name.Entity */
+.ne { color: #FF0000; font-weight: bold } /* Name.Exception */
+.nf { color: #0066BB; font-weight: bold } /* Name.Function */
+.nl { color: #997700; font-weight: bold } /* Name.Label */
+.nn { color: #0e84b5; font-weight: bold } /* Name.Namespace */
+.nt { color: #007700 } /* Name.Tag */
+.nv { color: #996633 } /* Name.Variable */
+.ow { color: #000000; font-weight: bold } /* Operator.Word */
+.w { color: #bbbbbb } /* Text.Whitespace */
+.mb { color: #6600EE; font-weight: bold } /* Literal.Number.Bin */
+.mf { color: #6600EE; font-weight: bold } /* Literal.Number.Float */
+.mh { color: #005588; font-weight: bold } /* Literal.Number.Hex */
+.mi { color: #0000DD; font-weight: bold } /* Literal.Number.Integer */
+.mo { color: #4400EE; font-weight: bold } /* Literal.Number.Oct */
+.sb { background-color: #fff0f0 } /* Literal.String.Backtick */
+.sc { color: #0044DD } /* Literal.String.Char */
+.sd { color: #DD4422 } /* Literal.String.Doc */
+.s2 { background-color: #fff0f0 } /* Literal.String.Double */
+.se { color: #666666; font-weight: bold; background-color: #fff0f0 } /* Literal.String.Escape */
+.sh { background-color: #fff0f0 } /* Literal.String.Heredoc */
+.si { background-color: #eeeeee } /* Literal.String.Interpol */
+.sx { color: #DD2200; background-color: #fff0f0 } /* Literal.String.Other */
+.sr { color: #000000; background-color: #fff0ff } /* Literal.String.Regex */
+.s1 { background-color: #fff0f0 } /* Literal.String.Single */
+.ss { color: #AA6600 } /* Literal.String.Symbol */
+.bp { color: #007020 } /* Name.Builtin.Pseudo */
+.vc { color: #336699 } /* Name.Variable.Class */
+.vg { color: #dd7700; font-weight: bold } /* Name.Variable.Global */
+.vi { color: #3333BB } /* Name.Variable.Instance */
+.il { color: #0000DD; font-weight: bold } /* Literal.Number.Integer.Long */
+.highlight pre {
+  background: #f0f0f0;
+  padding: 0.5em;
+  border-left: 1px solid #a0a0a0;
+  border-right: 1px solid #a0a0a0;
+  border-top: 1px dashed #c0c0c0;
+  border-bottom: 1px dashed #c0c0c0
+}
+
+.navbar {
+  background: #e0e8f0;
+  padding-top: 0.25em;
+  padding-bottom: 0.25em
+}
+
+.navbar span {
+  float: left;
+  text-align: center;
+  width: 33%
+}
+
+h1 {
+  text-align: center
+}
+</style>
+</head>
+<body>
+<h1>Sprite Viewer</h1>
+
+
+<div class="highlight"><pre><span class="c"># Copyright (C) 2017 David Boddie &lt;david@boddie.org.uk&gt;</span>
+<span class="c">#</span>
+<span class="c"># This program is free software: you can redistribute it and/or modify</span>
+<span class="c"># it under the terms of the GNU General Public License as published by</span>
+<span class="c"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c"># (at your option) any later version.</span>
+<span class="c">#</span>
+<span class="c"># This program is distributed in the hope that it will be useful,</span>
+<span class="c"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c"># GNU General Public License for more details.</span>
+<span class="c">#</span>
+<span class="c"># You should have received a copy of the GNU General Public License</span>
+<span class="c"># along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="kn">from</span> <span class="nn">java.io</span> <span class="kn">import</span> <span class="n">File</span><span class="p">,</span> <span class="n">IOException</span><span class="p">,</span> <span class="n">RandomAccessFile</span>
+<span class="kn">from</span> <span class="nn">java.lang</span> <span class="kn">import</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">Object</span><span class="p">,</span> <span class="n">String</span>
+<span class="kn">from</span> <span class="nn">java.nio</span> <span class="kn">import</span> <span class="n">ByteBuffer</span><span class="p">,</span> <span class="n">ByteOrder</span>
+<span class="kn">from</span> <span class="nn">java.util</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Map</span>
+
+<span class="k">class</span> <span class="nc">SpritefileError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="ne">Exception</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+    
+    <span class="nd">@args</span><span class="p">(</span><span class="n">void</span><span class="p">,</span> <span class="p">[</span><span class="n">String</span><span class="p">])</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">details</span><span class="p">):</span>
+        <span class="ne">Exception</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">details</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">Sprite</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
+
+    <span class="n">__fields__</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span>
+        <span class="s">&quot;read&quot;</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="s">&quot;offset&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="s">&quot;h_words&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s">&quot;v_lines&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="s">&quot;first_bit&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s">&quot;last_bit&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="s">&quot;bpp&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s">&quot;log2bpp&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="s">&quot;xdpi&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s">&quot;ydpi&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="s">&quot;width&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s">&quot;height&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="s">&quot;mode&quot;</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span>
+        <span class="s">&quot;palette&quot;</span><span class="p">:</span> <span class="n">Palette</span><span class="p">,</span>
+        <span class="s">&quot;rgba&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">byte</span><span class="p">]</span>
+        <span class="p">}</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    
+        <span class="n">Object</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">read</span> <span class="o">=</span> <span class="bp">False</span>
+
+
+<span class="k">class</span> <span class="nc">Palette</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
+
+    <span class="n">__fields__</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&quot;entries&quot;</span><span class="p">:</span> <span class="n">List</span><span class="p">(</span><span class="n">PaletteEntry</span><span class="p">)</span>
+        <span class="p">}</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    
+        <span class="n">Object</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">entries</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="nd">@args</span><span class="p">(</span><span class="n">void</span><span class="p">,</span> <span class="p">[</span><span class="n">PaletteEntry</span><span class="p">])</span>
+    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entry</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">entries</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span>
+    
+    <span class="nd">@args</span><span class="p">(</span><span class="n">PaletteEntry</span><span class="p">,</span> <span class="p">[</span><span class="nb">int</span><span class="p">])</span>
+    <span class="k">def</span> <span class="nf">getEntry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">entries</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+    
+    <span class="nd">@args</span><span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="p">[])</span>
+    <span class="k">def</span> <span class="nf">hasEntries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">entries</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span>
+    
+    <span class="nd">@args</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="p">[])</span>
+    <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">entries</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">PaletteEntry</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
+
+    <span class="n">__fields__</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&quot;primary&quot;</span><span class="p">:</span> <span class="n">List</span><span class="p">(</span><span class="nb">int</span><span class="p">),</span>
+        <span class="s">&quot;secondary&quot;</span><span class="p">:</span> <span class="n">List</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+        <span class="p">}</span>
+    
+    <span class="nd">@args</span><span class="p">(</span><span class="n">void</span><span class="p">,</span> <span class="p">[</span><span class="n">List</span><span class="p">(</span><span class="nb">int</span><span class="p">),</span> <span class="n">List</span><span class="p">(</span><span class="nb">int</span><span class="p">)])</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">primary</span><span class="p">,</span> <span class="n">secondary</span><span class="p">):</span>
+    
+        <span class="n">Object</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">primary</span> <span class="o">=</span> <span class="n">primary</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">secondary</span> <span class="o">=</span> <span class="n">secondary</span>
+
+
+<span class="k">class</span> <span class="nc">Spritefile</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
+
+    <span class="n">__fields__</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&quot;file&quot;</span><span class="p">:</span> <span class="n">File</span><span class="p">,</span>
+        <span class="s">&quot;sprites&quot;</span><span class="p">:</span> <span class="n">Map</span><span class="p">(</span><span class="n">String</span><span class="p">,</span> <span class="n">Sprite</span><span class="p">)</span>
+        <span class="p">}</span>
+    
+    <span class="nd">@args</span><span class="p">(</span><span class="n">void</span><span class="p">,</span> <span class="p">[])</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    
+        <span class="n">Object</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">file</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
+    
+    <span class="nd">@args</span><span class="p">(</span><span class="n">void</span><span class="p">,</span> <span class="p">[</span><span class="n">File</span><span class="p">])</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
+    
+        <span class="n">Object</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">file</span> <span class="o">=</span> <span class="nb">file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    
+        <span class="c"># Define scaling factors for 8 bits per pixel and 16 bits per pixel colour.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scale8</span>  <span class="o">=</span> <span class="mf">255.0</span><span class="o">/</span><span class="mf">15.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scale16</span> <span class="o">=</span> <span class="mf">255.0</span><span class="o">/</span><span class="mf">31.0</span>
+        
+        <span class="c"># Constants</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">HEADER</span> <span class="o">=</span> <span class="mi">60</span>
+        
+        <span class="c"># Mode information dictionary (log2bpp, x scale, y scale)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mode_info</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="mi">0</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">1</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">2</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">3</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+            <span class="mi">4</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">5</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">6</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">7</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+            <span class="mi">8</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">9</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">10</span><span class="p">:</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">11</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+            <span class="mi">12</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">13</span><span class="p">:</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">14</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">15</span><span class="p">:</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+            <span class="mi">16</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">17</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">18</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="mi">19</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="mi">20</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="mi">21</span><span class="p">:</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="mi">22</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="mi">23</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="mi">24</span><span class="p">:</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">25</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="mi">26</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="mi">27</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="mi">28</span><span class="p">:</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="mi">29</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="mi">30</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="mi">31</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="mi">32</span><span class="p">:</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="mi">33</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">34</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">35</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+            <span class="mi">36</span><span class="p">:</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">37</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">38</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">39</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+            <span class="mi">40</span><span class="p">:</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">41</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">42</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">43</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+            <span class="mi">44</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">45</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">46</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">47</span><span class="p">:</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+            <span class="mi">48</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="mi">49</span><span class="p">:</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="p">}</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">palette16</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="mh">0xff</span><span class="p">,</span> <span class="mh">0xff</span><span class="p">,</span> <span class="mh">0xff</span><span class="p">),</span> <span class="p">(</span><span class="mh">0xdd</span><span class="p">,</span> <span class="mh">0xdd</span><span class="p">,</span> <span class="mh">0xdd</span><span class="p">),</span>
+            <span class="p">(</span><span class="mh">0xbb</span><span class="p">,</span> <span class="mh">0xbb</span><span class="p">,</span> <span class="mh">0xbb</span><span class="p">),</span> <span class="p">(</span><span class="mh">0x99</span><span class="p">,</span> <span class="mh">0x99</span><span class="p">,</span> <span class="mh">0x99</span><span class="p">),</span>
+            <span class="p">(</span><span class="mh">0x77</span><span class="p">,</span> <span class="mh">0x77</span><span class="p">,</span> <span class="mh">0x77</span><span class="p">),</span> <span class="p">(</span><span class="mh">0x55</span><span class="p">,</span> <span class="mh">0x55</span><span class="p">,</span> <span class="mh">0x55</span><span class="p">),</span>
+            <span class="p">(</span><span class="mh">0x33</span><span class="p">,</span> <span class="mh">0x33</span><span class="p">,</span> <span class="mh">0x33</span><span class="p">),</span> <span class="p">(</span><span class="mh">0x00</span><span class="p">,</span> <span class="mh">0x00</span><span class="p">,</span> <span class="mh">0x00</span><span class="p">),</span>
+            <span class="p">(</span><span class="mh">0x00</span><span class="p">,</span> <span class="mh">0x44</span><span class="p">,</span> <span class="mh">0x99</span><span class="p">),</span> <span class="p">(</span><span class="mh">0xee</span><span class="p">,</span> <span class="mh">0xee</span><span class="p">,</span> <span class="mh">0x00</span><span class="p">),</span>
+            <span class="p">(</span><span class="mh">0x00</span><span class="p">,</span> <span class="mh">0xcc</span><span class="p">,</span> <span class="mh">0x00</span><span class="p">),</span> <span class="p">(</span><span class="mh">0xdd</span><span class="p">,</span> <span class="mh">0x00</span><span class="p">,</span> <span class="mh">0x00</span><span class="p">),</span>
+            <span class="p">(</span><span class="mh">0xee</span><span class="p">,</span> <span class="mh">0xee</span><span class="p">,</span> <span class="mh">0xbb</span><span class="p">),</span> <span class="p">(</span><span class="mh">0x55</span><span class="p">,</span> <span class="mh">0x88</span><span class="p">,</span> <span class="mh">0x00</span><span class="p">),</span>
+            <span class="p">(</span><span class="mh">0xff</span><span class="p">,</span> <span class="mh">0xbb</span><span class="p">,</span> <span class="mh">0x00</span><span class="p">),</span> <span class="p">(</span><span class="mh">0x00</span><span class="p">,</span> <span class="mh">0xbb</span><span class="p">,</span> <span class="mh">0xff</span><span class="p">)</span>
+            <span class="p">]</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">palette4</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="mh">0xff</span><span class="p">,</span> <span class="mh">0xff</span><span class="p">,</span> <span class="mh">0xff</span><span class="p">),</span> <span class="p">(</span><span class="mh">0xbb</span><span class="p">,</span> <span class="mh">0xbb</span><span class="p">,</span> <span class="mh">0xbb</span><span class="p">),</span>
+            <span class="p">(</span><span class="mh">0x77</span><span class="p">,</span> <span class="mh">0x77</span><span class="p">,</span> <span class="mh">0x77</span><span class="p">),</span> <span class="p">(</span><span class="mh">0x00</span><span class="p">,</span> <span class="mh">0x00</span><span class="p">,</span> <span class="mh">0x00</span><span class="p">)</span>
+            <span class="p">]</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">bit_depths</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="mi">1</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">2</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="mi">3</span><span class="p">:</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">4</span><span class="p">:</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+            <span class="mi">5</span><span class="p">:</span> <span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="mi">6</span><span class="p">:</span> <span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="mi">7</span><span class="p">:</span> <span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+            <span class="p">}</span>
+    
+    <span class="k">def</span> <span class="nf">new</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    
+        <span class="bp">self</span><span class="o">.</span><span class="n">sprites</span> <span class="o">=</span> <span class="p">{}</span>
+    
+    <span class="nd">@args</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">RandomAccessFile</span><span class="p">])</span>
+    <span class="k">def</span> <span class="nf">str2num</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+    
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span>
+        
+        <span class="n">buf</span> <span class="o">=</span> <span class="n">ByteBuffer</span><span class="o">.</span><span class="n">allocate</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+        <span class="n">buf</span><span class="o">.</span><span class="n">order</span><span class="p">(</span><span class="n">ByteOrder</span><span class="o">.</span><span class="n">LITTLE_ENDIAN</span><span class="p">)</span>
+        
+        <span class="n">read</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">read</span> <span class="o">&lt;</span> <span class="n">size</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">buf</span><span class="o">.</span><span class="n">array</span><span class="p">(),</span> <span class="n">read</span><span class="p">,</span> <span class="n">size</span> <span class="o">-</span> <span class="n">read</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">r</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">IOException</span><span class="p">()</span>
+            <span class="n">read</span> <span class="o">+=</span> <span class="n">r</span>
+        
+        <span class="k">while</span> <span class="n">read</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="n">buf</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">read</span><span class="p">,</span> <span class="n">byte</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+            <span class="n">read</span> <span class="o">+=</span> <span class="mi">1</span>
+        
+        <span class="k">return</span> <span class="n">buf</span><span class="o">.</span><span class="n">getInt</span><span class="p">()</span>
+    
+    <span class="nd">@args</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="p">[</span><span class="n">RandomAccessFile</span><span class="p">])</span>
+    <span class="k">def</span> <span class="nf">read_byte</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+    
+        <span class="n">v</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span> <span class="n">v</span> <span class="o">+=</span> <span class="mi">256</span>
+        <span class="k">return</span> <span class="n">v</span>
+    
+    <span class="nd">@args</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="p">[</span><span class="n">RandomAccessFile</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span>
+    <span class="k">def</span> <span class="nf">read_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">offset</span><span class="p">):</span>
+    
+        <span class="c"># Go to the start of this sprite.</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span>
+        
+        <span class="nb">next</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">str2num</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        
+        <span class="n">name</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="n">byte</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">12</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">name</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span>
+                <span class="k">break</span>
+        
+        <span class="n">sprite</span> <span class="o">=</span> <span class="n">Sprite</span><span class="p">()</span>
+        <span class="n">sprite</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">String</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s">&quot;ASCII&quot;</span><span class="p">)</span>
+        <span class="n">sprite</span><span class="o">.</span><span class="n">offset</span> <span class="o">=</span> <span class="n">offset</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">sprites</span><span class="p">[</span><span class="n">sprite</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">sprite</span>
+        
+        <span class="k">return</span> <span class="nb">next</span>
+    
+    <span class="nd">@args</span><span class="p">(</span><span class="n">void</span><span class="p">,</span> <span class="p">[</span><span class="n">RandomAccessFile</span><span class="p">,</span> <span class="n">Sprite</span><span class="p">])</span>
+    <span class="k">def</span> <span class="nf">read_details</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">sprite</span><span class="p">):</span>
+    
+        <span class="c"># Go to the start of this sprite.</span>
+        <span class="n">offset</span> <span class="o">=</span> <span class="n">sprite</span><span class="o">.</span><span class="n">offset</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span>
+        
+        <span class="c"># Skip the next offset and name.</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">skipBytes</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span>
+        
+        <span class="c"># Read width of sprite in words and height in scan lines.</span>
+        <span class="c"># These are stored in the Spritefile as width-1 and height-1.</span>
+        <span class="n">h_words</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">str2num</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">v_lines</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">str2num</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="n">sprite</span><span class="o">.</span><span class="n">h_words</span> <span class="o">=</span> <span class="n">h_words</span>
+        <span class="n">sprite</span><span class="o">.</span><span class="n">v_lines</span> <span class="o">=</span> <span class="n">v_lines</span>
+        
+        <span class="c"># The bits used in each word.</span>
+        <span class="n">first_bit_used</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">str2num</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="n">last_bit_used</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">str2num</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+
+        <span class="n">sprite</span><span class="o">.</span><span class="n">first_bit</span> <span class="o">=</span> <span class="n">first_bit_used</span>
+        <span class="n">sprite</span><span class="o">.</span><span class="n">last_bit</span> <span class="o">=</span> <span class="n">last_bit_used</span>
+        
+        <span class="c"># The pointers to the image and mask are found from the offsets</span>
+        <span class="c"># relative to the start of the sprite; i.e. from the next sprite</span>
+        <span class="c"># offset.</span>
+        <span class="n">image_ptr</span> <span class="o">=</span> <span class="n">offset</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">str2num</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="n">mask_ptr</span>  <span class="o">=</span> <span class="n">offset</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">str2num</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        
+        <span class="c"># The mode number of the sprite.</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">str2num</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        
+        <span class="n">bpp</span> <span class="o">=</span> <span class="p">(</span><span class="n">mode</span> <span class="o">&gt;&gt;</span> <span class="mi">27</span><span class="p">)</span>
+        <span class="n">log2bpp</span> <span class="o">=</span> <span class="n">xdpi</span> <span class="o">=</span> <span class="n">ydpi</span> <span class="o">=</span> <span class="mi">0</span>
+        
+        <span class="k">if</span> <span class="n">bpp</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        
+            <span class="n">mode</span> <span class="o">=</span> <span class="n">mode</span> <span class="o">&amp;</span> <span class="mh">0x3f</span>
+            
+            <span class="c"># Information on commonly used modes</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">log2bpp</span><span class="p">,</span> <span class="n">xscale</span><span class="p">,</span> <span class="n">yscale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode_info</span><span class="p">[</span><span class="n">mode</span><span class="p">]</span>
+                <span class="c"># Old modes have a maximum of 90 dots per inch.</span>
+                <span class="n">xdpi</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">90</span><span class="o">/</span><span class="n">xscale</span><span class="p">)</span>
+                <span class="n">ydpi</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">90</span><span class="o">/</span><span class="n">yscale</span><span class="p">)</span>
+                <span class="n">bpp</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">log2bpp</span>
+                
+                <span class="c"># Sprites for old screen modes are all converted to RGB format.</span>
+                <span class="n">sprite</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s">&#39;RGB&#39;</span>
+            
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">SpritefileError</span><span class="p">(</span><span class="s">&#39;Unknown mode number.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">bpp</span> <span class="o">&lt;</span> <span class="mi">7</span><span class="p">:</span>
+                <span class="n">sprite</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s">&#39;RGB&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">sprite</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s">&#39;CMYK&#39;</span>
+            
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">bpp</span><span class="p">,</span> <span class="n">log2bpp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bit_depths</span><span class="p">[</span><span class="n">bpp</span><span class="p">]</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">SpritefileError</span><span class="p">(</span><span class="s">&#39;Unknown number of bits per pixel.&#39;</span><span class="p">)</span>
+            
+            <span class="n">xdpi</span> <span class="o">=</span> <span class="p">((</span><span class="n">mode</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0x1fff</span><span class="p">)</span>
+            <span class="n">ydpi</span> <span class="o">=</span> <span class="p">((</span><span class="n">mode</span> <span class="o">&gt;&gt;</span> <span class="mi">14</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0x1fff</span><span class="p">)</span>
+        
+        <span class="n">sprite</span><span class="o">.</span><span class="n">bpp</span> <span class="o">=</span> <span class="n">bpp</span>
+        <span class="n">sprite</span><span class="o">.</span><span class="n">log2bpp</span> <span class="o">=</span> <span class="n">log2bpp</span>
+        <span class="n">sprite</span><span class="o">.</span><span class="n">xdpi</span> <span class="o">=</span> <span class="n">xdpi</span>
+        <span class="n">sprite</span><span class="o">.</span><span class="n">ydpi</span> <span class="o">=</span> <span class="n">ydpi</span>
+        
+        <span class="n">has_palette</span> <span class="o">=</span> <span class="bp">False</span>
+        
+        <span class="n">palette</span> <span class="o">=</span> <span class="n">Palette</span><span class="p">()</span>
+        
+        <span class="c"># Read palette, if present, putting the values into a list</span>
+        <span class="k">while</span> <span class="n">f</span><span class="o">.</span><span class="n">getFilePointer</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">image_ptr</span><span class="p">:</span>
+        
+            <span class="n">f</span><span class="o">.</span><span class="n">skipBytes</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="c"># First entry (red, green, blue)</span>
+            <span class="n">entry1</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">read_byte</span><span class="p">(</span><span class="n">f</span><span class="p">),</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">read_byte</span><span class="p">(</span><span class="n">f</span><span class="p">),</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">read_byte</span><span class="p">(</span><span class="n">f</span><span class="p">)]</span>
+            
+            <span class="n">f</span><span class="o">.</span><span class="n">skipBytes</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="c"># Second entry (red, green, blue)</span>
+            <span class="n">entry2</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">read_byte</span><span class="p">(</span><span class="n">f</span><span class="p">),</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">read_byte</span><span class="p">(</span><span class="n">f</span><span class="p">),</span>
+                      <span class="bp">self</span><span class="o">.</span><span class="n">read_byte</span><span class="p">(</span><span class="n">f</span><span class="p">)]</span>
+            
+            <span class="n">palette</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">PaletteEntry</span><span class="p">(</span><span class="n">entry1</span><span class="p">,</span> <span class="n">entry2</span><span class="p">))</span>
+        
+        <span class="k">if</span> <span class="n">palette</span><span class="o">.</span><span class="n">hasEntries</span><span class="p">():</span>
+        
+            <span class="k">if</span> <span class="n">bpp</span> <span class="o">==</span> <span class="mi">8</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">palette</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">256</span><span class="p">:</span>
+            
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">palette</span><span class="p">)</span> <span class="o">==</span> <span class="mi">16</span><span class="p">:</span>
+                
+                    <span class="c"># Each four pairs of entries describes the variation</span>
+                    <span class="c"># in a particular colour: 0-3, 4-7, 8-11, 12-15</span>
+                    <span class="c"># These sixteen colours describe the rest of the 256</span>
+                    <span class="c"># colours.</span>
+                    
+                    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="mi">16</span><span class="p">):</span>
+                    
+                        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">16</span><span class="p">):</span>
+                        
+                            <span class="n">entry</span> <span class="o">=</span> <span class="n">palette</span><span class="o">.</span><span class="n">getEntry</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                            <span class="n">primary</span> <span class="o">=</span> <span class="n">entry</span><span class="o">.</span><span class="n">primary</span>
+                            
+                            <span class="c"># Generate new colours using the palette</span>
+                            <span class="c"># supplied for the first 16 colours</span>
+                            <span class="n">red</span>   <span class="o">=</span> <span class="p">(((</span><span class="n">j</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0x10</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">primary</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">)</span>
+                            <span class="n">green</span> <span class="o">=</span> <span class="p">(((</span><span class="n">j</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0x40</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">3</span><span class="p">)</span> <span class="o">|</span> \
+                                    <span class="p">(((</span><span class="n">j</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0x20</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">3</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">primary</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">)</span>
+                            <span class="n">blue</span>  <span class="o">=</span> <span class="p">(((</span><span class="n">j</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0x80</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">primary</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">)</span>
+                            <span class="n">red</span>   <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">red</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale8</span><span class="p">)</span>
+                            <span class="n">green</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">green</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale8</span><span class="p">)</span>
+                            <span class="n">blue</span>  <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">blue</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale8</span><span class="p">)</span>
+                            
+                            <span class="c"># Append new entries</span>
+                            <span class="n">entry</span> <span class="o">=</span> <span class="n">PaletteEntry</span><span class="p">([</span><span class="n">red</span><span class="p">,</span> <span class="n">green</span><span class="p">,</span> <span class="n">blue</span><span class="p">],</span>
+                                                 <span class="p">[</span><span class="n">red</span><span class="p">,</span> <span class="n">green</span><span class="p">,</span> <span class="n">blue</span><span class="p">])</span>
+                            <span class="n">palette</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span>
+                
+                <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">palette</span><span class="p">)</span> <span class="o">==</span> <span class="mi">64</span><span class="p">:</span>
+                
+                    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="mi">64</span><span class="p">):</span>
+                    
+                        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">64</span><span class="p">):</span>
+                        
+                            <span class="n">entry</span> <span class="o">=</span> <span class="n">palette</span><span class="o">.</span><span class="n">getEntry</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                            <span class="n">primary</span> <span class="o">=</span> <span class="n">entry</span><span class="o">.</span><span class="n">primary</span>
+                            
+                            <span class="n">red</span>   <span class="o">=</span> <span class="p">(((</span><span class="n">j</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0x10</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">primary</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">)</span>
+                            <span class="n">green</span> <span class="o">=</span> <span class="p">(((</span><span class="n">j</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0x40</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">3</span><span class="p">)</span> <span class="o">|</span> \
+                                    <span class="p">(((</span><span class="n">j</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0x20</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">3</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">primary</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">)</span>
+                            <span class="n">blue</span>  <span class="o">=</span> <span class="p">(((</span><span class="n">j</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0x80</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">primary</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">)</span>
+                            <span class="n">red</span>   <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">red</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale8</span><span class="p">)</span>
+                            <span class="n">green</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">green</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale8</span><span class="p">)</span>
+                            <span class="n">blue</span>  <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">blue</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale8</span><span class="p">)</span>
+                            
+                            <span class="c"># Append new entries</span>
+                            <span class="n">entry</span> <span class="o">=</span> <span class="n">PaletteEntry</span><span class="p">([</span><span class="n">red</span><span class="p">,</span> <span class="n">green</span><span class="p">,</span> <span class="n">blue</span><span class="p">],</span>
+                                                 <span class="p">[</span><span class="n">red</span><span class="p">,</span> <span class="n">green</span><span class="p">,</span> <span class="n">blue</span><span class="p">])</span>
+                            <span class="n">palette</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span>
+            
+            <span class="n">sprite</span><span class="o">.</span><span class="n">palette</span> <span class="o">=</span> <span class="n">palette</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sprite</span><span class="o">.</span><span class="n">palette</span> <span class="o">=</span> <span class="bp">None</span>
+        
+        <span class="c"># The width of the sprite is the number of words used divided by the</span>
+        <span class="c"># bits per pixel of the sprite. Additionally, the parts of the sprite</span>
+        <span class="c"># unused at the ends are subtracted.</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="p">(</span><span class="n">h_words</span> <span class="o">*</span> <span class="p">(</span><span class="mi">32</span> <span class="o">&gt;&gt;</span> <span class="n">sprite</span><span class="o">.</span><span class="n">log2bpp</span><span class="p">))</span> <span class="o">-</span> \
+                <span class="p">(</span><span class="n">first_bit_used</span> <span class="o">&gt;&gt;</span> <span class="n">sprite</span><span class="o">.</span><span class="n">log2bpp</span><span class="p">)</span> <span class="o">-</span> \
+                <span class="p">((</span><span class="mi">31</span><span class="o">-</span><span class="n">last_bit_used</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">sprite</span><span class="o">.</span><span class="n">log2bpp</span><span class="p">)</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="n">v_lines</span>
+        
+        <span class="n">sprite</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">width</span>
+        <span class="n">sprite</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">height</span>
+        
+        <span class="c"># Obtain image data</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">image_ptr</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">sprite</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s">&#39;RGB&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sprite2rgb</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">sprite</span><span class="p">)</span>
+        
+        <span class="k">elif</span> <span class="n">sprite</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s">&#39;CMYK&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sprite2cmyk</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">sprite</span><span class="p">)</span>
+        
+        <span class="c"># Obtain mask data</span>
+        <span class="k">if</span> <span class="n">mask_ptr</span> <span class="o">!=</span> <span class="n">image_ptr</span><span class="p">:</span>
+        
+            <span class="n">f</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">mask_ptr</span><span class="p">)</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">mask2rgba</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">sprite</span><span class="p">)</span>
+            
+            <span class="c"># The image is stored in RGBA form.</span>
+            <span class="n">sprite</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s">&#39;RGBA&#39;</span>
+        
+        <span class="n">sprite</span><span class="o">.</span><span class="n">read</span> <span class="o">=</span> <span class="bp">True</span>
+    
+    <span class="nd">@args</span><span class="p">(</span><span class="n">void</span><span class="p">,</span> <span class="p">[</span><span class="n">File</span><span class="p">])</span>
+    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
+    
+        <span class="n">f</span> <span class="o">=</span> <span class="n">RandomAccessFile</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">)</span>
+        
+        <span class="c"># Examine the sprites</span>
+        <span class="n">number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">str2num</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="n">offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">str2num</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span> <span class="o">-</span> <span class="mi">4</span>
+        <span class="n">free</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">str2num</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span> <span class="o">-</span> <span class="mi">4</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">sprites</span> <span class="o">=</span> <span class="p">{}</span>
+        
+        <span class="n">o</span> <span class="o">=</span> <span class="n">offset</span>
+        <span class="k">while</span> <span class="n">offset</span> <span class="o">&lt;</span> <span class="n">free</span><span class="p">:</span>
+            <span class="n">offset</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_name</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">offset</span><span class="p">)</span>
+    
+    <span class="nd">@args</span><span class="p">(</span><span class="n">Sprite</span><span class="p">,</span> <span class="p">[</span><span class="n">String</span><span class="p">])</span>
+    <span class="k">def</span> <span class="nf">getSprite</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    
+        <span class="n">f</span> <span class="o">=</span> <span class="n">RandomAccessFile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">)</span>
+        
+        <span class="n">sprite</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sprites</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">sprite</span><span class="o">.</span><span class="n">read</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">read_details</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">sprite</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">sprite</span>
+    
+    <span class="nd">@args</span><span class="p">(</span><span class="n">void</span><span class="p">,</span> <span class="p">[</span><span class="n">RandomAccessFile</span><span class="p">,</span> <span class="n">Sprite</span><span class="p">])</span>
+    <span class="k">def</span> <span class="nf">sprite2rgb</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">sprite</span><span class="p">):</span>
+    
+        <span class="c"># Convert sprite to RGB values</span>
+        
+        <span class="n">has_palette</span> <span class="o">=</span> <span class="p">(</span><span class="n">sprite</span><span class="o">.</span><span class="n">palette</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">)</span> <span class="ow">and</span> <span class="n">sprite</span><span class="o">.</span><span class="n">palette</span><span class="o">.</span><span class="n">hasEntries</span><span class="p">()</span>
+        
+        <span class="n">rgb</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="n">byte</span><span class="p">,</span> <span class="n">sprite</span><span class="o">.</span><span class="n">width</span> <span class="o">*</span> <span class="n">sprite</span><span class="o">.</span><span class="n">height</span> <span class="o">*</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="n">ptr</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">getFilePointer</span><span class="p">()</span> <span class="o">*</span> <span class="mi">8</span>    <span class="c"># bit offset</span>
+        <span class="n">rgb_i</span> <span class="o">=</span> <span class="mi">0</span>
+        
+        <span class="n">bits_to_read</span> <span class="o">=</span> <span class="n">sprite</span><span class="o">.</span><span class="n">width</span> <span class="o">*</span> <span class="n">sprite</span><span class="o">.</span><span class="n">bpp</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="n">byte</span><span class="p">,</span> <span class="n">sprite</span><span class="o">.</span><span class="n">h_words</span> <span class="o">*</span> <span class="mi">4</span><span class="p">)</span>
+        
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">sprite</span><span class="o">.</span><span class="n">height</span><span class="p">:</span>
+        
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+            
+            <span class="c"># bit offset into the image</span>
+            <span class="n">row_ptr</span> <span class="o">=</span> <span class="n">ptr</span>
+            
+            <span class="c">### To be updated when shr_long instruction generation is fixed.</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">row_ptr</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">3</span><span class="p">)</span>
+            
+            <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+            
+            <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="n">sprite</span><span class="o">.</span><span class="n">first_bit</span> <span class="o">/</span> <span class="mi">8</span>
+            
+            <span class="k">while</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">sprite</span><span class="o">.</span><span class="n">width</span><span class="p">:</span>
+            
+                <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+                
+                <span class="c"># Conversion depends on bpp value</span>
+                <span class="k">if</span> <span class="n">sprite</span><span class="o">.</span><span class="n">bpp</span> <span class="o">==</span> <span class="mi">32</span><span class="p">:</span>
+
+                    <span class="n">red</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+                    <span class="n">green</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+                    <span class="n">blue</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">k</span> <span class="o">+</span> <span class="mi">2</span><span class="p">])</span>
+                    <span class="n">k</span> <span class="o">+=</span> <span class="mi">4</span>
+                
+                <span class="k">elif</span> <span class="n">sprite</span><span class="o">.</span><span class="n">bpp</span> <span class="o">==</span> <span class="mi">16</span><span class="p">:</span>
+                
+                    <span class="n">low</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+                    <span class="k">if</span> <span class="n">low</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span> <span class="n">low</span> <span class="o">+=</span> <span class="mi">256</span>
+                    <span class="n">high</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+                    <span class="k">if</span> <span class="n">high</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span> <span class="n">high</span> <span class="o">+=</span> <span class="mi">256</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="n">low</span> <span class="o">|</span> <span class="p">(</span><span class="n">high</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">)</span>
+                    <span class="n">red</span>   <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">value</span> <span class="o">&amp;</span> <span class="mh">0x1f</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale16</span><span class="p">)</span>
+                    <span class="n">green</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(((</span><span class="n">value</span> <span class="o">&gt;&gt;</span> <span class="mi">5</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0x1f</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale16</span><span class="p">)</span>
+                    <span class="n">blue</span>  <span class="o">=</span> <span class="nb">int</span><span class="p">(((</span><span class="n">value</span> <span class="o">&gt;&gt;</span> <span class="mi">10</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0x1f</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale16</span><span class="p">)</span>
+                    <span class="n">k</span> <span class="o">+=</span> <span class="mi">2</span>
+                
+                <span class="k">elif</span> <span class="n">sprite</span><span class="o">.</span><span class="n">bpp</span> <span class="o">==</span> <span class="mi">8</span><span class="p">:</span>
+                
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">has_palette</span><span class="p">:</span>
+                        <span class="c"># Standard VIDC 256 colours</span>
+                        <span class="n">value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+                        <span class="n">red</span>   <span class="o">=</span> <span class="p">((</span><span class="n">value</span> <span class="o">&amp;</span> <span class="mh">0x10</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">value</span> <span class="o">&amp;</span> <span class="mi">7</span><span class="p">)</span>
+                        <span class="n">green</span> <span class="o">=</span> <span class="p">((</span><span class="n">value</span> <span class="o">&amp;</span> <span class="mh">0x40</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">3</span><span class="p">)</span> <span class="o">|</span> \
+                                <span class="p">((</span><span class="n">value</span> <span class="o">&amp;</span> <span class="mh">0x20</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">3</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">value</span> <span class="o">&amp;</span> <span class="mi">3</span><span class="p">)</span>
+                        <span class="n">blue</span>  <span class="o">=</span> <span class="p">((</span><span class="n">value</span> <span class="o">&amp;</span> <span class="mh">0x80</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">)</span> <span class="o">|</span> \
+                                <span class="p">((</span><span class="n">value</span> <span class="o">&amp;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">value</span> <span class="o">&amp;</span> <span class="mi">3</span><span class="p">)</span>
+                        <span class="n">red</span>   <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">red</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale8</span><span class="p">)</span>
+                        <span class="n">green</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">green</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale8</span><span class="p">)</span>
+                        <span class="n">blue</span>  <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">blue</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale8</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c"># 256 entry palette</span>
+                        <span class="n">value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+                        <span class="n">red</span><span class="p">,</span> <span class="n">green</span><span class="p">,</span> <span class="n">blue</span> <span class="o">=</span> <span class="n">sprite</span><span class="o">.</span><span class="n">palette</span><span class="o">.</span><span class="n">getEntry</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">primary</span>
+                    
+                    <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
+                
+                <span class="k">elif</span> <span class="n">sprite</span><span class="o">.</span><span class="n">bpp</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                
+                    <span class="n">value</span> <span class="o">=</span> <span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">&gt;&gt;</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">row_ptr</span><span class="p">)</span> <span class="o">%</span> <span class="mi">8</span><span class="p">))</span> <span class="o">&amp;</span> <span class="mh">0xf</span>
+                    
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">has_palette</span><span class="p">:</span>
+                        <span class="c"># Standard 16 desktop colours</span>
+                        <span class="c"># Look up the value in the standard palette.</span>
+                        <span class="n">red</span><span class="p">,</span> <span class="n">green</span><span class="p">,</span> <span class="n">blue</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">palette16</span><span class="p">[</span><span class="n">value</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c"># 16 entry palette</span>
+                        <span class="n">red</span><span class="p">,</span> <span class="n">green</span><span class="p">,</span> <span class="n">blue</span> <span class="o">=</span> <span class="n">sprite</span><span class="o">.</span><span class="n">palette</span><span class="o">.</span><span class="n">getEntry</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">primary</span>
+                    
+                    <span class="n">row_ptr</span> <span class="o">+=</span> <span class="mi">4</span>
+                    <span class="k">if</span> <span class="n">row_ptr</span> <span class="o">%</span> <span class="mi">8</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
+                
+                <span class="k">elif</span> <span class="n">sprite</span><span class="o">.</span><span class="n">bpp</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                
+                    <span class="n">value</span> <span class="o">=</span> <span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">&gt;&gt;</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">row_ptr</span><span class="p">)</span> <span class="o">%</span> <span class="mi">8</span><span class="p">))</span> <span class="o">&amp;</span> <span class="mh">0x3</span>
+                    
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">has_palette</span><span class="p">:</span>
+                        <span class="c"># Greyscales</span>
+                        <span class="n">red</span><span class="p">,</span> <span class="n">green</span><span class="p">,</span> <span class="n">blue</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">palette4</span><span class="p">[</span><span class="n">value</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c"># 4 entry palette</span>
+                        <span class="n">red</span><span class="p">,</span> <span class="n">green</span><span class="p">,</span> <span class="n">blue</span> <span class="o">=</span> <span class="n">sprite</span><span class="o">.</span><span class="n">palette</span><span class="o">.</span><span class="n">getEntry</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">primary</span>
+                    
+                    <span class="n">row_ptr</span> <span class="o">+=</span> <span class="mi">2</span>
+                    <span class="k">if</span> <span class="n">row_ptr</span> <span class="o">%</span> <span class="mi">8</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
+                
+                <span class="k">elif</span> <span class="n">sprite</span><span class="o">.</span><span class="n">bpp</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                
+                    <span class="n">value</span> <span class="o">=</span> <span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">&gt;&gt;</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">row_ptr</span><span class="p">)</span> <span class="o">%</span> <span class="mi">8</span><span class="p">))</span> <span class="o">&amp;</span> <span class="mi">1</span>
+                    
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">has_palette</span><span class="p">:</span>
+                        <span class="c"># Black and white</span>
+                        <span class="n">red</span> <span class="o">=</span> <span class="n">green</span> <span class="o">=</span> <span class="n">blue</span> <span class="o">=</span> <span class="p">(</span><span class="mi">255</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">value</span><span class="p">))</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c"># 2 entry palette</span>
+                        <span class="n">red</span><span class="p">,</span> <span class="n">green</span><span class="p">,</span> <span class="n">blue</span> <span class="o">=</span> <span class="n">sprite</span><span class="o">.</span><span class="n">palette</span><span class="o">.</span><span class="n">getEntry</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">primary</span>
+                    
+                    <span class="n">row_ptr</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">if</span> <span class="n">row_ptr</span> <span class="o">%</span> <span class="mi">8</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">red</span> <span class="o">=</span> <span class="n">green</span> <span class="o">=</span> <span class="n">blue</span> <span class="o">=</span> <span class="mi">0</span>
+                
+                <span class="n">rgb</span><span class="p">[</span><span class="n">rgb_i</span><span class="p">]</span> <span class="o">=</span> <span class="n">red</span>
+                <span class="n">rgb</span><span class="p">[</span><span class="n">rgb_i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">green</span>
+                <span class="n">rgb</span><span class="p">[</span><span class="n">rgb_i</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">blue</span>
+                <span class="n">rgb</span><span class="p">[</span><span class="n">rgb_i</span> <span class="o">+</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="mi">255</span>
+                <span class="n">rgb_i</span> <span class="o">+=</span> <span class="mi">4</span>
+            
+            <span class="n">ptr</span> <span class="o">=</span> <span class="n">ptr</span> <span class="o">+</span> <span class="p">(</span><span class="n">sprite</span><span class="o">.</span><span class="n">h_words</span> <span class="o">*</span> <span class="mi">32</span><span class="p">)</span>
+        
+        <span class="n">sprite</span><span class="o">.</span><span class="n">rgba</span> <span class="o">=</span> <span class="n">rgb</span>
+    
+    <span class="nd">@args</span><span class="p">(</span><span class="n">void</span><span class="p">,</span> <span class="p">[</span><span class="n">RandomAccessFile</span><span class="p">,</span> <span class="n">Sprite</span><span class="p">])</span>
+    <span class="k">def</span> <span class="nf">sprite2cmyk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">sprite</span><span class="p">):</span>
+
+        <span class="c"># Read a CMYK sprite - currently just reuse the data verbatim.</span>
+
+        <span class="n">ptr</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">getFilePointer</span><span class="p">()</span> <span class="o">*</span> <span class="mi">8</span>    <span class="c"># bit offset</span>
+        
+        <span class="n">rgb</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="n">byte</span><span class="p">,</span> <span class="n">sprite</span><span class="o">.</span><span class="n">width</span> <span class="o">*</span> <span class="n">sprite</span><span class="o">.</span><span class="n">height</span> <span class="o">*</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="n">rgb_i</span> <span class="o">=</span> <span class="mi">0</span>
+        
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sprite</span><span class="o">.</span><span class="n">height</span><span class="p">):</span>
+
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sprite</span><span class="o">.</span><span class="n">width</span><span class="p">):</span>
+
+                <span class="n">rgb</span><span class="p">[</span><span class="n">rgb_i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_byte</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+                <span class="n">rgb</span><span class="p">[</span><span class="n">rgb_i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_byte</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+                <span class="n">rgb</span><span class="p">[</span><span class="n">rgb_i</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_byte</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+                <span class="n">rgb</span><span class="p">[</span><span class="n">rgb_i</span> <span class="o">+</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_byte</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+                <span class="n">rgb_i</span> <span class="o">+=</span> <span class="mi">4</span>
+        
+        <span class="n">sprite</span><span class="o">.</span><span class="n">rgba</span> <span class="o">=</span> <span class="n">rgb</span>
+    
+    <span class="nd">@args</span><span class="p">(</span><span class="n">void</span><span class="p">,</span> <span class="p">[</span><span class="n">RandomAccessFile</span><span class="p">,</span> <span class="n">Sprite</span><span class="p">])</span>
+    <span class="k">def</span> <span class="nf">mask2rgba</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">sprite</span><span class="p">):</span>
+    
+        <span class="n">rgba</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="n">byte</span><span class="p">,</span> <span class="n">sprite</span><span class="o">.</span><span class="n">width</span> <span class="o">*</span> <span class="n">sprite</span><span class="o">.</span><span class="n">height</span> <span class="o">*</span> <span class="mi">4</span><span class="p">)</span>
+        
+        <span class="c"># Colour depths below 16 bpp have the same number of bpp in the mask.</span>
+        <span class="n">bpp</span> <span class="o">=</span> <span class="n">sprite</span><span class="o">.</span><span class="n">bpp</span>
+        
+        <span class="k">if</span> <span class="n">bpp</span> <span class="o">==</span> <span class="mi">32</span> <span class="ow">or</span> <span class="n">bpp</span> <span class="o">==</span> <span class="mi">16</span><span class="p">:</span>
+            <span class="n">bpp</span> <span class="o">=</span> <span class="mi">1</span>
+        
+        <span class="n">bits</span> <span class="o">=</span> <span class="n">bpp</span> <span class="o">*</span> <span class="n">sprite</span><span class="o">.</span><span class="n">width</span>
+        
+        <span class="n">row_size</span> <span class="o">=</span> <span class="n">bits</span> <span class="o">&gt;&gt;</span> <span class="mi">5</span>        <span class="c"># number of 32-bit words</span>
+        <span class="k">if</span> <span class="n">bits</span> <span class="o">%</span> <span class="mi">32</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">row_size</span> <span class="o">=</span> <span class="n">row_size</span> <span class="o">+</span> <span class="mi">1</span>
+        
+        <span class="n">ptr</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">getFilePointer</span><span class="p">()</span> <span class="o">*</span> <span class="mi">8</span>    <span class="c"># bit offset</span>
+        <span class="n">image_ptr</span> <span class="o">=</span> <span class="mi">0</span>
+        
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sprite</span><span class="o">.</span><span class="n">height</span><span class="p">):</span>
+        
+            <span class="c"># bit offset into the image</span>
+            <span class="n">row_ptr</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ptr</span><span class="p">)</span> <span class="o">+</span> <span class="n">sprite</span><span class="o">.</span><span class="n">first_bit</span>
+            
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sprite</span><span class="o">.</span><span class="n">width</span><span class="p">):</span>
+            
+                <span class="n">f</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">row_ptr</span> <span class="o">&gt;&gt;</span> <span class="mi">3</span><span class="p">)</span>
+                
+                <span class="c"># Conversion depends on bpp value</span>
+                <span class="k">if</span> <span class="n">bpp</span> <span class="o">==</span> <span class="mi">8</span><span class="p">:</span>
+                
+                    <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_byte</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">value</span> <span class="o">!=</span> <span class="mi">255</span><span class="p">:</span>
+                        <span class="n">value</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="n">row_ptr</span> <span class="o">+=</span> <span class="mi">8</span>
+                
+                <span class="k">elif</span> <span class="n">bpp</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                
+                    <span class="n">value</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">read_byte</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="p">(</span><span class="n">row_ptr</span> <span class="o">%</span> <span class="mi">8</span><span class="p">))</span> <span class="o">&amp;</span> <span class="mh">0xf</span>
+                    <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="mi">15</span><span class="p">:</span>
+                        <span class="n">value</span> <span class="o">=</span> <span class="mh">0xff</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">value</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="n">row_ptr</span> <span class="o">+=</span> <span class="mi">4</span>
+                
+                <span class="k">elif</span> <span class="n">bpp</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                
+                    <span class="n">value</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">read_byte</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="p">(</span><span class="n">row_ptr</span> <span class="o">%</span> <span class="mi">8</span><span class="p">))</span> <span class="o">&amp;</span> <span class="mh">0x3</span>
+                    <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                        <span class="n">value</span> <span class="o">=</span> <span class="mh">0xff</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">value</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="n">row_ptr</span> <span class="o">+=</span> <span class="mi">2</span>
+                
+                <span class="k">elif</span> <span class="n">bpp</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+
+                    <span class="c"># Black and white</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">read_byte</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="p">(</span><span class="n">row_ptr</span> <span class="o">%</span> <span class="mi">8</span><span class="p">))</span> <span class="o">&amp;</span> <span class="mi">1</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">*</span> <span class="mh">0xff</span>
+                    <span class="n">row_ptr</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c"># We should never reach here. This is included only to</span>
+                    <span class="c"># ensure that value is defined outside the if scope.</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="mi">0</span>
+                
+                <span class="c"># Only keep the colour components if the mask value is non-zero</span>
+                <span class="c"># because the Android API requires that the components are</span>
+                <span class="c"># pre-multiplied which, for this case, simply means multiplying</span>
+                <span class="c"># by 0 or 1.</span>
+                <span class="k">if</span> <span class="n">value</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">red</span><span class="p">,</span> <span class="n">green</span><span class="p">,</span> <span class="n">blue</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">sprite</span><span class="o">.</span><span class="n">rgba</span><span class="p">[</span><span class="n">image_ptr</span><span class="p">:</span><span class="n">image_ptr</span> <span class="o">+</span> <span class="mi">4</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">red</span> <span class="o">=</span> <span class="n">green</span> <span class="o">=</span> <span class="n">blue</span> <span class="o">=</span> <span class="n">byte</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                
+                <span class="n">rgba</span><span class="p">[</span><span class="n">image_ptr</span><span class="p">]</span> <span class="o">=</span> <span class="n">red</span>
+                <span class="n">rgba</span><span class="p">[</span><span class="n">image_ptr</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">green</span>
+                <span class="n">rgba</span><span class="p">[</span><span class="n">image_ptr</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">blue</span>
+                <span class="n">rgba</span><span class="p">[</span><span class="n">image_ptr</span> <span class="o">+</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+                
+                <span class="n">image_ptr</span> <span class="o">+=</span> <span class="mi">4</span>
+            
+            <span class="n">ptr</span> <span class="o">+=</span> <span class="n">row_size</span> <span class="o">*</span> <span class="mi">32</span>
+        
+        <span class="n">sprite</span><span class="o">.</span><span class="n">rgba</span> <span class="o">=</span> <span class="n">rgba</span>
+</pre></div>
+
+<h2>Files</h2>
+<ul>
+<li><a href="../filebrowser.py">filebrowser.py</a></li>
+<li><a href="../spritebrowser.py">spritebrowser.py</a></li>
+<li><a href="../spritefile.py">spritefile.py</a></li>
+<li><a href="../spriteviewer.py">spriteviewer.py</a></li>
+</ul></body>
+</html>
