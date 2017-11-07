@@ -21,26 +21,16 @@ from java.lang import Byte, Math, Object, String
 from java.nio import ByteBuffer
 from java.util import Collections, LinkedList, List, Map, Queue
 
+from android.content import Context, Intent
 from android.graphics import Bitmap, Canvas, Color, Paint, \
                              PorterDuff, PorterDuffXfermode
+from android.net import Uri
 from android.os import AsyncTask
-from android.view import View, ViewGroup
+from android.view import ContextMenu, MenuItem, View, ViewGroup
 from android.widget import AdapterView, BaseAdapter, ImageView, GridView, \
                            LinearLayout, TextView
 
 from spritefile import Spritefile
-
-"""We define an interface that classes can implement to indicate that they can
-handle the action of viewing a sprite. The `handleSpriteView` method they
-implement accepts the `Bitmap` representation of the sprite which can be
-displayed or sent to a suitable component."""
-
-class SpriteViewInterface:
-
-    @args(void, [Bitmap])
-    def handleSpriteView(self, bitmap):
-        pass
-
 
 """We define a class to represent an entry in the cache that is used by the
 `SpriteAdapter` class. It holds the name of a sprite and its bitmap
@@ -171,6 +161,11 @@ class SpriteAdapter(BaseAdapter):
         self.cache = {}
         self.positions = []
     
+    @args(String, [int])
+    def getSpriteName(self, position):
+    
+        return self.items[position]
+    
     """This method is used to obtain a `Bitmap` for a sprite at a given
     position in the list of items held by the adapter."""
     
@@ -207,7 +202,8 @@ class SpriteRenderer(AsyncTask):
         self.paint = Paint()
         self.paint.setXfermode(PorterDuffXfermode(PorterDuff.Mode.SRC_OVER))
     
-    """We define a method to conveniently create new empty bitmaps."""
+    """We define a method to conveniently create new bitmaps with a chequered
+    background pattern."""
     
     @args(Bitmap, [int, int, bool])
     def emptyBitmap(self, width, height, ready):
@@ -250,6 +246,11 @@ class SpriteRenderer(AsyncTask):
     def getSpriteBitmap(self):
     
         return self.getSpriteBitmap(self.spritefile, self.name)
+    
+    """This method performs the work required by the previous method. It exists
+    as a separate static method so that other components can use it to retrieve
+    sprites from spritefiles without having to create an instance of this
+    class."""
     
     @static
     @args(Bitmap, [Spritefile, String])
@@ -332,22 +333,17 @@ class SpriteRenderer(AsyncTask):
 
 
 """The following class provides a `View` that encapsulates both the adapter
-that supplies rendered sprites and a grid in which to display them. It allows
-registration of a handler that implements the `SpriteViewInterface` and will
-call the method defined in that interface for sprites that are selected using
-a long click. This mechanism is how sprite view requests are communicated to
-the main activity."""
+that supplies rendered sprites and a grid in which to display them. It also
+exposes information about sprites held by an adapter to other components."""
 
 class SpriteBrowser(LinearLayout):
 
-    __interfaces__ = [AdapterView.OnItemLongClickListener]
-    __fields__ = {"handler": SpriteViewInterface}
+    __fields__ = {"bitmap": Bitmap}
     
+    @args(void, [Context])
     def __init__(self, context):
     
         LinearLayout.__init__(self, context)
-        
-        self.handler = None
         
         self.spriteAdapter = SpriteAdapter()
         
@@ -356,8 +352,33 @@ class SpriteBrowser(LinearLayout):
         self.grid.setVerticalSpacing(8)
         self.grid.setNumColumns(3)
         self.grid.setAdapter(self.spriteAdapter)
-        self.grid.setOnItemLongClickListener(self)
         self.addView(self.grid)
+    
+    @args(GridView, [])
+    def getGrid(self):
+    
+        return self.grid
+    
+    """The following two methods return the bitmap or name of a sprite at a
+    given position in the grid view."""
+    
+    @args(Bitmap, [int])
+    def getSpriteBitmap(self, position):
+    
+        return self.spriteAdapter.getSpriteBitmap(position)
+    
+    @args(String, [int])
+    def getSpriteName(self, position):
+    
+        return self.spriteAdapter.getSpriteName(position)
+    
+    """The following method returns the name of the spritefile that is
+    currently open in the browser."""
+    
+    @args(String, [])
+    def getSpriteFileName(self):
+    
+        return self.spriteAdapter.spritefile.file.getName()
     
     """This method ensures that the view displays a reasonable number of
     columns in the grid when it is first shown."""
@@ -374,28 +395,6 @@ class SpriteBrowser(LinearLayout):
     def updateLayout(self, screenWidthDp):
     
         self.grid.setNumColumns(screenWidthDp/SpriteAdapter.preview_size)
-    
-    """In this method we acknowledge a long click on a sprite in the grid,
-    obtain a `Bitmap` for the sprite and call the appropriate method of the
-    registered handler object."""
-    
-    @args(bool, [AdapterView, View, int, long])
-    def onItemLongClick(self, parent, view, position, id):
-    
-        bitmap = self.spriteAdapter.getSpriteBitmap(position)
-        
-        if self.handler != None:
-            self.handler.handleSpriteView(bitmap)
-        
-        return True
-    
-    """The following method handles registration of an object that implements
-    the `SpriteViewInterface` interface."""
-    
-    @args(void, [SpriteViewInterface])
-    def setHandler(self, handler):
-    
-        self.handler = handler
     
     """The main activity calls this method to tell the browser to display the
     contents of the given file. We simply update the adapter to use the new

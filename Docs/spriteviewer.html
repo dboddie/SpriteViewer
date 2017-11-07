@@ -113,27 +113,32 @@ h1 {
 <p>The <code>spriteviewer</code> module provides the main activity class for the Sprite
 Viewer application.</p>
 
-<div class="highlight"><pre><span class="kn">from</span> <span class="nn">java.io</span> <span class="kn">import</span> <span class="n">BufferedOutputStream</span><span class="p">,</span> <span class="n">File</span><span class="p">,</span> <span class="n">FileOutputStream</span>
+<div class="highlight"><pre><span class="kn">from</span> <span class="nn">java.lang</span> <span class="kn">import</span> <span class="n">String</span>
+<span class="kn">from</span> <span class="nn">java.io</span> <span class="kn">import</span> <span class="n">BufferedOutputStream</span><span class="p">,</span> <span class="n">File</span><span class="p">,</span> <span class="n">FileOutputStream</span>
+
 <span class="kn">from</span> <span class="nn">android.content</span> <span class="kn">import</span> <span class="n">Intent</span>
 <span class="kn">from</span> <span class="nn">android.graphics</span> <span class="kn">import</span> <span class="n">Bitmap</span>
 <span class="kn">from</span> <span class="nn">android.os</span> <span class="kn">import</span> <span class="n">Environment</span>
 <span class="kn">from</span> <span class="nn">android.net</span> <span class="kn">import</span> <span class="n">Uri</span>
+<span class="kn">from</span> <span class="nn">android.view</span> <span class="kn">import</span> <span class="n">Menu</span>
+<span class="kn">from</span> <span class="nn">android.widget</span> <span class="kn">import</span> <span class="n">AdapterView</span><span class="p">,</span> <span class="n">Toast</span>
 
 <span class="kn">from</span> <span class="nn">serpentine.activities</span> <span class="kn">import</span> <span class="n">Activity</span>
 <span class="kn">from</span> <span class="nn">serpentine.files</span> <span class="kn">import</span> <span class="n">Files</span>
 
 <span class="kn">from</span> <span class="nn">filebrowser</span> <span class="kn">import</span> <span class="n">FileBrowser</span><span class="p">,</span> <span class="n">FileOpenInterface</span>
-<span class="kn">from</span> <span class="nn">spritebrowser</span> <span class="kn">import</span> <span class="n">SpriteBrowser</span><span class="p">,</span> <span class="n">SpriteViewInterface</span>
+<span class="kn">from</span> <span class="nn">spritebrowser</span> <span class="kn">import</span> <span class="n">SpriteBrowser</span>
 </pre></div>
 
 <p>The <code>SpriteViewerActivity</code> class represents the application and defines the
-high level parts of the user interface. It also implements interfaces defined
-in the <a href="filebrowser.html">filebrowser</a> and <a href="spritebrowser.html">spritebrowser</a>
-modules.</p>
+high level parts of the user interface using classes from the
+<a href="filebrowser.html">filebrowser</a> and <a href="spritebrowser.html">spritebrowser</a> modules.
+It also implements an interface defined in the <a href="filebrowser.html">filebrowser</a>
+module.</p>
 
 <div class="highlight"><pre><span class="k">class</span> <span class="nc">SpriteViewerActivity</span><span class="p">(</span><span class="n">Activity</span><span class="p">):</span>
 
-    <span class="n">__interfaces__</span> <span class="o">=</span> <span class="p">[</span><span class="n">FileOpenInterface</span><span class="p">,</span> <span class="n">SpriteViewInterface</span><span class="p">]</span>
+    <span class="n">__interfaces__</span> <span class="o">=</span> <span class="p">[</span><span class="n">FileOpenInterface</span><span class="p">]</span>
     
     <span class="n">__fields__</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;temp_file&quot;</span><span class="p">:</span> <span class="n">File</span><span class="p">}</span>
     
@@ -142,8 +147,15 @@ modules.</p>
         <span class="n">Activity</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">showing</span> <span class="o">=</span> <span class="s">&quot;files&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">temp_file</span> <span class="o">=</span> <span class="bp">None</span>
-    
-    <span class="k">def</span> <span class="nf">onCreate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bundle</span><span class="p">):</span>
+</pre></div>
+
+<p>We reimplement the <code>onCreate</code> method to provide a user interface for the
+application and to record how the application was started. If it was
+launched normally, it will show a file browser. If it was run as the result
+of opening a spritefile in a file manager application, it will show the
+sprites contained in that spritefile.</p>
+
+<div class="highlight"><pre>    <span class="k">def</span> <span class="nf">onCreate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bundle</span><span class="p">):</span>
     
         <span class="n">Activity</span><span class="o">.</span><span class="n">onCreate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bundle</span><span class="p">)</span>
         
@@ -153,7 +165,7 @@ modules.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">fileBrowser</span><span class="o">.</span><span class="n">setHandler</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">spriteBrowser</span> <span class="o">=</span> <span class="n">SpriteBrowser</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">spriteBrowser</span><span class="o">.</span><span class="n">setHandler</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">registerForContextMenu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spriteBrowser</span><span class="o">.</span><span class="n">getGrid</span><span class="p">())</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">setContentView</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fileBrowser</span><span class="p">)</span>
         
@@ -180,8 +192,12 @@ modules.</p>
     <span class="k">def</span> <span class="nf">onPause</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     
         <span class="n">Activity</span><span class="o">.</span><span class="n">onPause</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-    
-    <span class="k">def</span> <span class="nf">onStop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</pre></div>
+
+<p>The reimplementation of the <code>onStop</code> method checks for the presence of
+a temporary file and deletes it.</p>
+
+<div class="highlight"><pre>    <span class="k">def</span> <span class="nf">onStop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     
         <span class="n">Activity</span><span class="o">.</span><span class="n">onStop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         
@@ -226,15 +242,48 @@ the selected file in the sprite browser.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">setContentView</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spriteBrowser</span><span class="p">)</span>
 </pre></div>
 
-<p>The following method is used to handle sprite view requests from the
-sprite browser. It saves the <code>Bitmap</code> passed to the method to a PNG file in
-the device's external storage. Finally, it broadcasts an intent to request
-that the newly saved file be displayed by a suitable application.</p>
+<p>We support the creation of a context menu with the following method
+which defines two menu items, storing them for later checks when a menu
+item is selected by the user.</p>
 
-<div class="highlight"><pre>    <span class="k">def</span> <span class="nf">handleSpriteView</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bitmap</span><span class="p">):</span>
+<div class="highlight"><pre>    <span class="k">def</span> <span class="nf">onCreateContextMenu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">menu</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">menuInfo</span><span class="p">):</span>
+    
+        <span class="bp">self</span><span class="o">.</span><span class="n">viewItem</span> <span class="o">=</span> <span class="n">menu</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Menu</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">Menu</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span> <span class="s">&quot;Show full size&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">saveItem</span> <span class="o">=</span> <span class="n">menu</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Menu</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">Menu</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span> <span class="s">&quot;Save as PNG&quot;</span><span class="p">)</span>
+</pre></div>
+
+<p>When a menu item is selected, we check it against the two defined items
+and either show the current sprite in an external application or save it to
+a file, depending on which item was selected.</p>
+
+<div class="highlight"><pre>    <span class="k">def</span> <span class="nf">onContextItemSelected</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+    
+        <span class="n">menuInfo</span> <span class="o">=</span> <span class="n">CAST</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">getMenuInfo</span><span class="p">(),</span> <span class="n">AdapterView</span><span class="o">.</span><span class="n">AdapterContextMenuInfo</span><span class="p">)</span>
+        <span class="n">position</span> <span class="o">=</span> <span class="n">menuInfo</span><span class="o">.</span><span class="n">position</span>
+        
+        <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">getItemId</span><span class="p">()</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">viewItem</span><span class="o">.</span><span class="n">getItemId</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">viewSprite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spriteBrowser</span><span class="o">.</span><span class="n">getSpriteBitmap</span><span class="p">(</span><span class="n">position</span><span class="p">))</span>
+            <span class="k">return</span> <span class="bp">True</span>
+        
+        <span class="k">elif</span> <span class="n">item</span><span class="o">.</span><span class="n">getItemId</span><span class="p">()</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">saveItem</span><span class="o">.</span><span class="n">getItemId</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">saveSprite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spriteBrowser</span><span class="o">.</span><span class="n">getSpriteFileName</span><span class="p">(),</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">spriteBrowser</span><span class="o">.</span><span class="n">getSpriteName</span><span class="p">(</span><span class="n">position</span><span class="p">),</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">spriteBrowser</span><span class="o">.</span><span class="n">getSpriteBitmap</span><span class="p">(</span><span class="n">position</span><span class="p">))</span>
+            <span class="k">return</span> <span class="bp">True</span>
+        
+        <span class="k">return</span> <span class="bp">False</span>
+</pre></div>
+
+<p>The following method is used to handle sprite view requests. It saves
+the <code>Bitmap</code> passed to the method to a PNG file in the device's external
+storage. Finally, it broadcasts an intent to request that the newly saved
+file be displayed by a suitable application.</p>
+
+<div class="highlight"><pre>    <span class="nd">@args</span><span class="p">(</span><span class="n">void</span><span class="p">,</span> <span class="p">[</span><span class="n">Bitmap</span><span class="p">])</span>
+    <span class="k">def</span> <span class="nf">viewSprite</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bitmap</span><span class="p">):</span>
     
         <span class="bp">self</span><span class="o">.</span><span class="n">temp_file</span> <span class="o">=</span> <span class="n">Files</span><span class="o">.</span><span class="n">createExternalFile</span><span class="p">(</span><span class="n">Environment</span><span class="o">.</span><span class="n">DIRECTORY_DOWNLOADS</span><span class="p">,</span>
-            <span class="s">&quot;SpriteViewer&quot;</span><span class="p">,</span> <span class="s">&quot;temp&quot;</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">,</span> <span class="s">&quot;.png&quot;</span><span class="p">)</span>
+            <span class="s">&quot;SpriteViewer&quot;</span><span class="p">,</span> <span class="s">&quot;.temp&quot;</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">,</span> <span class="s">&quot;.png&quot;</span><span class="p">)</span>
         
         <span class="n">stream</span> <span class="o">=</span> <span class="n">BufferedOutputStream</span><span class="p">(</span><span class="n">FileOutputStream</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">temp_file</span><span class="p">))</span>
         <span class="n">bitmap</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="n">Bitmap</span><span class="o">.</span><span class="n">CompressFormat</span><span class="o">.</span><span class="n">PNG</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">stream</span><span class="p">)</span>
@@ -243,9 +292,29 @@ that the newly saved file be displayed by a suitable application.</p>
         
         <span class="n">intent</span> <span class="o">=</span> <span class="n">Intent</span><span class="p">()</span>
         <span class="n">intent</span><span class="o">.</span><span class="n">setAction</span><span class="p">(</span><span class="n">Intent</span><span class="o">.</span><span class="n">ACTION_VIEW</span><span class="p">)</span>
-        <span class="n">intent</span><span class="o">.</span><span class="n">setDataAndType</span><span class="p">(</span><span class="n">Uri</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">&quot;file://&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">temp_file</span><span class="o">.</span><span class="n">getPath</span><span class="p">()),</span>
-                              <span class="s">&quot;image/png&quot;</span><span class="p">)</span>
+        <span class="n">intent</span><span class="o">.</span><span class="n">setDataAndType</span><span class="p">(</span><span class="n">Uri</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s">&quot;file://&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">temp_file</span><span class="o">.</span><span class="n">getPath</span><span class="p">()),</span> <span class="s">&quot;image/png&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">startActivity</span><span class="p">(</span><span class="n">intent</span><span class="p">)</span>
+</pre></div>
+
+<p>This method saves a PNG file to a subdirectory of the <code>SpriteViewer</code>
+directory in the device's external storage. It shows a transient message
+to indicate that it has saved a file.</p>
+
+<div class="highlight"><pre>    <span class="nd">@args</span><span class="p">(</span><span class="n">void</span><span class="p">,</span> <span class="p">[</span><span class="n">String</span><span class="p">,</span> <span class="n">String</span><span class="p">,</span> <span class="n">Bitmap</span><span class="p">])</span>
+    <span class="k">def</span> <span class="nf">saveSprite</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spritefileName</span><span class="p">,</span> <span class="n">spriteName</span><span class="p">,</span> <span class="n">bitmap</span><span class="p">):</span>
+    
+        <span class="c"># Create a subdirectory of the SpriteViewer directory for the current</span>
+        <span class="c"># set of sprites.</span>
+        <span class="n">subDir</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="n">Environment</span><span class="o">.</span><span class="n">DIRECTORY_DOWNLOADS</span><span class="p">,</span> <span class="s">&quot;SpriteViewer&quot;</span><span class="p">)</span>
+        
+        <span class="n">outputFile</span> <span class="o">=</span> <span class="n">Files</span><span class="o">.</span><span class="n">createExternalFile</span><span class="p">(</span><span class="n">subDir</span><span class="o">.</span><span class="n">getPath</span><span class="p">(),</span>
+            <span class="n">spritefileName</span><span class="p">,</span> <span class="n">spriteName</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">,</span> <span class="s">&quot;.png&quot;</span><span class="p">)</span>
+        
+        <span class="n">stream</span> <span class="o">=</span> <span class="n">BufferedOutputStream</span><span class="p">(</span><span class="n">FileOutputStream</span><span class="p">(</span><span class="n">outputFile</span><span class="p">))</span>
+        <span class="n">bitmap</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="n">Bitmap</span><span class="o">.</span><span class="n">CompressFormat</span><span class="o">.</span><span class="n">PNG</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">stream</span><span class="p">)</span>
+        <span class="n">stream</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+        
+        <span class="n">Toast</span><span class="o">.</span><span class="n">makeText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&quot;Saved &quot;</span> <span class="o">+</span> <span class="n">outputFile</span><span class="o">.</span><span class="n">getPath</span><span class="p">(),</span> <span class="n">Toast</span><span class="o">.</span><span class="n">LENGTH_LONG</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 
 <h2>Files</h2>
