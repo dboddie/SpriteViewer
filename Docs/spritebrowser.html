@@ -114,7 +114,7 @@ h1 {
 spritefiles.</p>
 
 <div class="highlight"><pre><span class="kn">from</span> <span class="nn">java.io</span> <span class="kn">import</span> <span class="n">File</span>
-<span class="kn">from</span> <span class="nn">java.lang</span> <span class="kn">import</span> <span class="n">Byte</span><span class="p">,</span> <span class="n">Math</span><span class="p">,</span> <span class="n">Object</span><span class="p">,</span> <span class="n">String</span>
+<span class="kn">from</span> <span class="nn">java.lang</span> <span class="kn">import</span> <span class="n">Byte</span><span class="p">,</span> <span class="n">Math</span><span class="p">,</span> <span class="n">Object</span><span class="p">,</span> <span class="n">Runnable</span><span class="p">,</span> <span class="n">String</span>
 <span class="kn">from</span> <span class="nn">java.nio</span> <span class="kn">import</span> <span class="n">ByteBuffer</span>
 <span class="kn">from</span> <span class="nn">java.util</span> <span class="kn">import</span> <span class="n">Collections</span><span class="p">,</span> <span class="n">LinkedList</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Map</span><span class="p">,</span> <span class="n">Queue</span>
 
@@ -122,7 +122,7 @@ spritefiles.</p>
 <span class="kn">from</span> <span class="nn">android.graphics</span> <span class="kn">import</span> <span class="n">Bitmap</span><span class="p">,</span> <span class="n">Canvas</span><span class="p">,</span> <span class="n">Color</span><span class="p">,</span> <span class="n">Paint</span><span class="p">,</span> \
                              <span class="n">PorterDuff</span><span class="p">,</span> <span class="n">PorterDuffXfermode</span>
 <span class="kn">from</span> <span class="nn">android.net</span> <span class="kn">import</span> <span class="n">Uri</span>
-<span class="kn">from</span> <span class="nn">android.os</span> <span class="kn">import</span> <span class="n">AsyncTask</span>
+<span class="kn">from</span> <span class="nn">android.os</span> <span class="kn">import</span> <span class="n">AsyncTask</span><span class="p">,</span> <span class="n">Handler</span>
 <span class="kn">from</span> <span class="nn">android.view</span> <span class="kn">import</span> <span class="n">ContextMenu</span><span class="p">,</span> <span class="n">MenuItem</span><span class="p">,</span> <span class="n">View</span><span class="p">,</span> <span class="n">ViewGroup</span>
 <span class="kn">from</span> <span class="nn">android.widget</span> <span class="kn">import</span> <span class="n">AdapterView</span><span class="p">,</span> <span class="n">BaseAdapter</span><span class="p">,</span> <span class="n">ImageView</span><span class="p">,</span> <span class="n">GridView</span><span class="p">,</span> \
                            <span class="n">LinearLayout</span><span class="p">,</span> <span class="n">TextView</span>
@@ -152,16 +152,21 @@ constant preview size for the sprites that it represents, scaling each sprite
 to fit within a square with sides of this length.</p>
 <p>The class uses a cache with a constant maximum size to avoid having to render
 sprites each time an item is requested by a view. Sprite rendering is performed
-asynchronously using the <code>AsyncTask</code> class.</p>
+asynchronously using the <code>AsyncTask</code> class. The class implements the <code>Runnable</code>
+interface so that we can implement a method that allows us to postpone events
+and perform them later.</p>
 
 <div class="highlight"><pre><span class="k">class</span> <span class="nc">SpriteAdapter</span><span class="p">(</span><span class="n">BaseAdapter</span><span class="p">):</span>
 
+    <span class="n">__interfaces__</span> <span class="o">=</span> <span class="p">[</span><span class="n">Runnable</span><span class="p">]</span>
+    
     <span class="n">__fields__</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s">&quot;spritefile&quot;</span><span class="p">:</span> <span class="n">Spritefile</span><span class="p">,</span>
         <span class="s">&quot;items&quot;</span><span class="p">:</span> <span class="n">List</span><span class="p">(</span><span class="n">String</span><span class="p">),</span>
         <span class="s">&quot;cache&quot;</span><span class="p">:</span> <span class="n">Map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">CacheEntry</span><span class="p">),</span>
         <span class="s">&quot;name_cache&quot;</span><span class="p">:</span> <span class="n">Map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">String</span><span class="p">),</span>
-        <span class="s">&quot;positions&quot;</span><span class="p">:</span> <span class="n">Queue</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+        <span class="s">&quot;positions&quot;</span><span class="p">:</span> <span class="n">Queue</span><span class="p">(</span><span class="nb">int</span><span class="p">),</span>
+        <span class="s">&quot;pending&quot;</span><span class="p">:</span> <span class="n">Queue</span><span class="p">(</span><span class="n">WorkItem</span><span class="p">)</span>
         <span class="p">}</span>
     
     <span class="n">preview_size</span> <span class="o">=</span> <span class="mi">128</span>
@@ -172,11 +177,14 @@ asynchronously using the <code>AsyncTask</code> class.</p>
     
         <span class="n">BaseAdapter</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         
+        <span class="bp">self</span><span class="o">.</span><span class="n">handler</span> <span class="o">=</span> <span class="n">Handler</span><span class="p">()</span>
+        
         <span class="bp">self</span><span class="o">.</span><span class="n">spritefile</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">items</span> <span class="o">=</span> <span class="p">[]</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">cache</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">positions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pending</span> <span class="o">=</span> <span class="p">[]</span>
     
     <span class="nd">@args</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="p">[])</span>
     <span class="k">def</span> <span class="nf">getCount</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -219,19 +227,14 @@ the <code>ImageView</code> with a new <code>Bitmap</code>.</p>
                 <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">remove</span><span class="p">())</span>
         
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">[</span><span class="n">position</span><span class="p">]</span>
-            <span class="n">renderer</span> <span class="o">=</span> <span class="n">SpriteRenderer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spritefile</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">imageView</span><span class="p">,</span>
-                                      <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span>
-            
             <span class="c"># Create a placeholder bitmap to put into the view.</span>
-            <span class="n">bitmap</span> <span class="o">=</span> <span class="n">renderer</span><span class="o">.</span><span class="n">emptyBitmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">preview_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">preview_size</span><span class="p">,</span>
-                                          <span class="bp">False</span><span class="p">)</span>
+            <span class="n">bitmap</span> <span class="o">=</span> <span class="n">SpriteRenderer</span><span class="o">.</span><span class="n">emptyBitmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">preview_size</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">preview_size</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
             <span class="n">imageView</span><span class="o">.</span><span class="n">setImageBitmap</span><span class="p">(</span><span class="n">bitmap</span><span class="p">)</span>
             
-            <span class="c"># Create a list then convert it to an array. The initial list</span>
-            <span class="c"># creation causes the items to be wrapped in Integer objects.</span>
-            <span class="n">renderer</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">preview_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">preview_size</span><span class="p">,</span>
-                                    <span class="n">position</span><span class="p">]))</span>
+            <span class="c"># Schedule the rendering process.</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">[</span><span class="n">position</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">scheduleRender</span><span class="p">(</span><span class="n">WorkItem</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">imageView</span><span class="p">))</span>
         
         <span class="n">textView</span> <span class="o">=</span> <span class="n">TextView</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
         <span class="n">textView</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
@@ -276,6 +279,54 @@ position in the list of items held by the adapter.</p>
         <span class="k">return</span> <span class="n">SpriteRenderer</span><span class="o">.</span><span class="n">getSpriteBitmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spritefile</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
 </pre></div>
 
+<p>The following method schedules a sprite render, either performing it
+immediately or, if too many sprites are already being rendered, schedules
+it for later.</p>
+
+<div class="highlight"><pre>    <span class="nd">@args</span><span class="p">(</span><span class="n">void</span><span class="p">,</span> <span class="p">[</span><span class="n">WorkItem</span><span class="p">])</span>
+    <span class="k">def</span> <span class="nf">scheduleRender</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">work</span><span class="p">):</span>
+    
+        <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">[</span><span class="n">work</span><span class="o">.</span><span class="n">position</span><span class="p">]</span>
+        
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">renderer</span> <span class="o">=</span> <span class="n">SpriteRenderer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spritefile</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">work</span><span class="o">.</span><span class="n">view</span><span class="p">,</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span>
+            
+            <span class="c"># Create a list then convert it to an array. The initial list</span>
+            <span class="c"># creation causes the items to be wrapped in Integer objects.</span>
+            <span class="n">renderer</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">preview_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">preview_size</span><span class="p">,</span>
+                                    <span class="n">work</span><span class="o">.</span><span class="n">position</span><span class="p">]))</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="c"># The sprite couldn&#39;t be rendered immediately. Add this item of</span>
+            <span class="c"># work to a queue and schedule an event for later. This will cause</span>
+            <span class="c"># the run method to be called.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pending</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">work</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="o">.</span><span class="n">postDelayed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">long</span><span class="p">(</span><span class="mi">250</span><span class="p">))</span> <span class="c"># 0.25s</span>
+</pre></div>
+
+<p>This method is called when a sprite render scheduled for later needs to
+be performed. We simply check that there is at least one sprite in the
+queue and try to schedule it again.</p>
+
+<div class="highlight"><pre>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">pending</span><span class="o">.</span><span class="n">isEmpty</span><span class="p">():</span>
+            <span class="n">work</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pending</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">scheduleRender</span><span class="p">(</span><span class="n">work</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">WorkItem</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
+
+    <span class="n">__fields__</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;position&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s">&quot;view&quot;</span><span class="p">:</span> <span class="n">ImageView</span><span class="p">}</span>
+    
+    <span class="nd">@args</span><span class="p">(</span><span class="n">void</span><span class="p">,</span> <span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">ImageView</span><span class="p">])</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+    
+        <span class="n">Object</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">position</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view</span> <span class="o">=</span> <span class="n">view</span>
+</pre></div>
+
 <p>The following class is used to render each sprite asynchronously in a
 background thread.</p>
 
@@ -306,8 +357,9 @@ sprites already rendered, and a queue of keys for bitmaps in the cache.</p>
 <p>We define a method to conveniently create new bitmaps with a chequered
 background pattern.</p>
 
-<div class="highlight"><pre>    <span class="nd">@args</span><span class="p">(</span><span class="n">Bitmap</span><span class="p">,</span> <span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">])</span>
-    <span class="k">def</span> <span class="nf">emptyBitmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">ready</span><span class="p">):</span>
+<div class="highlight"><pre>    <span class="nd">@static</span>
+    <span class="nd">@args</span><span class="p">(</span><span class="n">Bitmap</span><span class="p">,</span> <span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">])</span>
+    <span class="k">def</span> <span class="nf">emptyBitmap</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">ready</span><span class="p">):</span>
     
         <span class="n">bitmap</span> <span class="o">=</span> <span class="n">Bitmap</span><span class="o">.</span><span class="n">createBitmap</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">Bitmap</span><span class="o">.</span><span class="n">Config</span><span class="o">.</span><span class="n">ARGB_8888</span><span class="p">)</span>
         <span class="n">canvas</span> <span class="o">=</span> <span class="n">Canvas</span><span class="p">(</span><span class="n">bitmap</span><span class="p">)</span>

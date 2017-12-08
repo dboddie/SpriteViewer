@@ -17,7 +17,7 @@
 spritefiles."""
 
 from java.io import File
-from java.lang import Byte, Math, Object, String
+from java.lang import Byte, Math, Object, Runnable, String
 from java.nio import ByteBuffer
 from java.util import Collections, LinkedList, List, Map, Queue
 
@@ -25,7 +25,7 @@ from android.content import Context, Intent
 from android.graphics import Bitmap, Canvas, Color, Paint, \
                              PorterDuff, PorterDuffXfermode
 from android.net import Uri
-from android.os import AsyncTask
+from android.os import AsyncTask, Handler
 from android.view import ContextMenu, MenuItem, View, ViewGroup
 from android.widget import AdapterView, BaseAdapter, ImageView, GridView, \
                            LinearLayout, TextView
@@ -55,16 +55,21 @@ to fit within a square with sides of this length.
 
 The class uses a cache with a constant maximum size to avoid having to render
 sprites each time an item is requested by a view. Sprite rendering is performed
-asynchronously using the `AsyncTask` class."""
+asynchronously using the `AsyncTask` class. The class implements the `Runnable`
+interface so that we can implement a method that allows us to postpone events
+and perform them later."""
 
 class SpriteAdapter(BaseAdapter):
 
+    __interfaces__ = [Runnable]
+    
     __fields__ = {
         "spritefile": Spritefile,
         "items": List(String),
         "cache": Map(int, CacheEntry),
         "name_cache": Map(int, String),
-        "positions": Queue(int)
+        "positions": Queue(int),
+        "pending": Queue(WorkItem)
         }
     
     preview_size = 128
@@ -75,11 +80,14 @@ class SpriteAdapter(BaseAdapter):
     
         BaseAdapter.__init__(self)
         
+        self.handler = Handler()
+        
         self.spritefile = None
         self.items = []
         
         self.cache = {}
         self.positions = []
+        self.pending = []
     
     @args(int, [])
     def getCount(self):
@@ -121,19 +129,14 @@ class SpriteAdapter(BaseAdapter):
                 self.cache.remove(self.positions.remove())
         
         else:
-            name = self.items[position]
-            renderer = SpriteRenderer(self.spritefile, name, imageView,
-                                      self.cache, self.positions)
-            
             # Create a placeholder bitmap to put into the view.
-            bitmap = renderer.emptyBitmap(self.preview_size, self.preview_size,
-                                          False)
+            bitmap = SpriteRenderer.emptyBitmap(self.preview_size,
+                self.preview_size, False)
             imageView.setImageBitmap(bitmap)
             
-            # Create a list then convert it to an array. The initial list
-            # creation causes the items to be wrapped in Integer objects.
-            renderer.execute(array([self.preview_size, self.preview_size,
-                                    position]))
+            # Schedule the rendering process.
+            name = self.items[position]
+            self.scheduleRender(WorkItem(position, imageView))
         
         textView = TextView(context)
         textView.setText(name)
@@ -174,6 +177,52 @@ class SpriteAdapter(BaseAdapter):
     
         name = self.items[position]
         return SpriteRenderer.getSpriteBitmap(self.spritefile, name)
+    
+    """The following method schedules a sprite render, either performing it
+    immediately or, if too many sprites are already being rendered, schedules
+    it for later."""
+    
+    @args(void, [WorkItem])
+    def scheduleRender(self, work):
+    
+        name = self.items[work.position]
+        
+        try:
+            renderer = SpriteRenderer(self.spritefile, name, work.view,
+                                      self.cache, self.positions)
+            
+            # Create a list then convert it to an array. The initial list
+            # creation causes the items to be wrapped in Integer objects.
+            renderer.execute(array([self.preview_size, self.preview_size,
+                                    work.position]))
+        except:
+            # The sprite couldn't be rendered immediately. Add this item of
+            # work to a queue and schedule an event for later. This will cause
+            # the run method to be called.
+            self.pending.add(work)
+            self.handler.postDelayed(self, long(250)) # 0.25s
+    
+    """This method is called when a sprite render scheduled for later needs to
+    be performed. We simply check that there is at least one sprite in the
+    queue and try to schedule it again."""
+    
+    def run(self):
+    
+        if not self.pending.isEmpty():
+            work = self.pending.remove()
+            self.scheduleRender(work)
+
+
+class WorkItem(Object):
+
+    __fields__ = {"position": int, "view": ImageView}
+    
+    @args(void, [int, ImageView])
+    def __init__(self, position, view):
+    
+        Object.__init__(self)
+        self.position = position
+        self.view = view
 
 
 """The following class is used to render each sprite asynchronously in a
@@ -205,8 +254,9 @@ class SpriteRenderer(AsyncTask):
     """We define a method to conveniently create new bitmaps with a chequered
     background pattern."""
     
+    @static
     @args(Bitmap, [int, int, bool])
-    def emptyBitmap(self, width, height, ready):
+    def emptyBitmap(width, height, ready):
     
         bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         canvas = Canvas(bitmap)
