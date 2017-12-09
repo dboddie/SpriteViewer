@@ -17,16 +17,14 @@
 spritefiles."""
 
 from java.io import File
-from java.lang import Byte, Math, Object, Runnable, String
+from java.lang import Math, Object, Runnable, String
 from java.nio import ByteBuffer
 from java.util import Collections, LinkedList, List, Map, Queue
 
 from android.content import Context, Intent
 from android.graphics import Bitmap, Canvas, Color, Paint, \
                              PorterDuff, PorterDuffXfermode
-from android.net import Uri
 from android.os import AsyncTask, Handler
-from android.view import ContextMenu, MenuItem, View, ViewGroup
 from android.widget import AdapterView, BaseAdapter, ImageView, GridView, \
                            LinearLayout, TextView
 
@@ -75,7 +73,6 @@ class SpriteAdapter(BaseAdapter):
     preview_size = 128
     cache_size = 20
     
-    @args(void, [])
     def __init__(self):
     
         BaseAdapter.__init__(self)
@@ -89,15 +86,12 @@ class SpriteAdapter(BaseAdapter):
         self.positions = []
         self.pending = []
     
-    @args(int, [])
     def getCount(self):
         return len(self.items)
     
-    @args(Object, [int])
     def getItem(self, position):
         return None
     
-    @args(long, [int])
     def getItemId(self, position):
         return long(0)
     
@@ -109,7 +103,6 @@ class SpriteAdapter(BaseAdapter):
     complete, the `SpriteRenderer` object that performs the task will update
     the `ImageView` with a new `Bitmap`."""
     
-    @args(View, [int, View, ViewGroup])
     def getView(self, position, convertView, parent):
     
         context = parent.getContext()
@@ -186,11 +179,9 @@ class SpriteAdapter(BaseAdapter):
     def scheduleRender(self, work):
     
         name = self.items[work.position]
-        
+        renderer = SpriteRenderer(self.spritefile, name, work.view,
+                                  self.cache, self.positions)
         try:
-            renderer = SpriteRenderer(self.spritefile, name, work.view,
-                                      self.cache, self.positions)
-            
             # Create a list then convert it to an array. The initial list
             # creation causes the items to be wrapped in Integer objects.
             renderer.execute(array([self.preview_size, self.preview_size,
