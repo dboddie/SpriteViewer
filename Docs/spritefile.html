@@ -108,13 +108,20 @@ h1 {
 <span class="c">#</span>
 <span class="c"># You should have received a copy of the GNU General Public License</span>
 <span class="c"># along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+</pre></div>
 
-<span class="kn">from</span> <span class="nn">java.io</span> <span class="kn">import</span> <span class="n">File</span><span class="p">,</span> <span class="n">IOException</span><span class="p">,</span> <span class="n">RandomAccessFile</span>
+<p>The <code>spritefile</code> module contains classes for reading spritefiles.</p>
+<p>We import the classes necessary to read, decode and store sprite data.</p>
+
+<div class="highlight"><pre><span class="kn">from</span> <span class="nn">java.io</span> <span class="kn">import</span> <span class="n">File</span><span class="p">,</span> <span class="n">IOException</span><span class="p">,</span> <span class="n">RandomAccessFile</span>
 <span class="kn">from</span> <span class="nn">java.lang</span> <span class="kn">import</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">Object</span><span class="p">,</span> <span class="n">String</span>
 <span class="kn">from</span> <span class="nn">java.nio</span> <span class="kn">import</span> <span class="n">ByteBuffer</span><span class="p">,</span> <span class="n">ByteOrder</span>
 <span class="kn">from</span> <span class="nn">java.util</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Map</span>
+</pre></div>
 
-<span class="k">class</span> <span class="nc">SpritefileError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<p>We define a custom exception to report problems with spritefiles.</p>
+
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">SpritefileError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="ne">Exception</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -122,13 +129,17 @@ h1 {
     <span class="nd">@args</span><span class="p">(</span><span class="n">void</span><span class="p">,</span> <span class="p">[</span><span class="n">String</span><span class="p">])</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">details</span><span class="p">):</span>
         <span class="ne">Exception</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">details</span><span class="p">)</span>
+</pre></div>
 
+<p>The following class represents a sprite and contains all the relevant
+information required to display and modify it. It also defines a <code>decoded</code>
+field that indicates whether the sprite has been decoded.</p>
 
-<span class="k">class</span> <span class="nc">Sprite</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">Sprite</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
 
     <span class="n">__fields__</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="n">String</span><span class="p">,</span>
-        <span class="s">&quot;read&quot;</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="s">&quot;offset&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="s">&quot;decoded&quot;</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="s">&quot;offset&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="s">&quot;h_words&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s">&quot;v_lines&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="s">&quot;first_bit&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s">&quot;last_bit&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="s">&quot;bpp&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s">&quot;log2bpp&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -142,10 +153,15 @@ h1 {
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     
         <span class="n">Object</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">read</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">decoded</span> <span class="o">=</span> <span class="bp">False</span>
+</pre></div>
 
+<p>The following class represents a palette that can be associated with a
+sprite. Instances of this class are initially populated when their
+corresponding sprites are decoded, and their entries are read when colour data
+needs to be converted to RGBA values.</p>
 
-<span class="k">class</span> <span class="nc">Palette</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">Palette</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
 
     <span class="n">__fields__</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s">&quot;entries&quot;</span><span class="p">:</span> <span class="n">List</span><span class="p">(</span><span class="n">PaletteEntry</span><span class="p">)</span>
@@ -171,9 +187,12 @@ h1 {
     <span class="nd">@args</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="p">[])</span>
     <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">entries</span><span class="p">)</span>
+</pre></div>
 
+<p>We define a class to represent an individual palette entry, defining primary
+and secondary colours that were traditionally associated with flashing colours.</p>
 
-<span class="k">class</span> <span class="nc">PaletteEntry</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">PaletteEntry</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
 
     <span class="n">__fields__</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s">&quot;primary&quot;</span><span class="p">:</span> <span class="n">List</span><span class="p">(</span><span class="nb">int</span><span class="p">),</span>
@@ -186,9 +205,15 @@ h1 {
         <span class="n">Object</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">primary</span> <span class="o">=</span> <span class="n">primary</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">secondary</span> <span class="o">=</span> <span class="n">secondary</span>
+</pre></div>
 
+<p>The following class represents a spritefile that can contain zero or more
+sprites. The class can either be instantiated with a <code>File</code>, in which case the
+contents of that file will be read and decoded, or without. The contents of a
+file can later be read into a <code>Spritefile</code> object by calling its <code>read</code> method,
+replacing its existing contents.</p>
 
-<span class="k">class</span> <span class="nc">Spritefile</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">Spritefile</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
 
     <span class="n">__fields__</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s">&quot;file&quot;</span><span class="p">:</span> <span class="n">File</span><span class="p">,</span>
@@ -499,7 +524,7 @@ h1 {
             <span class="c"># The image is stored in RGBA form.</span>
             <span class="n">sprite</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s">&#39;RGBA&#39;</span>
         
-        <span class="n">sprite</span><span class="o">.</span><span class="n">read</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="n">sprite</span><span class="o">.</span><span class="n">decoded</span> <span class="o">=</span> <span class="bp">True</span>
     
     <span class="nd">@args</span><span class="p">(</span><span class="n">void</span><span class="p">,</span> <span class="p">[</span><span class="n">File</span><span class="p">])</span>
     <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
@@ -523,7 +548,7 @@ h1 {
         <span class="n">f</span> <span class="o">=</span> <span class="n">RandomAccessFile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">)</span>
         
         <span class="n">sprite</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sprites</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">sprite</span><span class="o">.</span><span class="n">read</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">sprite</span><span class="o">.</span><span class="n">decoded</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">read_details</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">sprite</span><span class="p">)</span>
         
         <span class="k">return</span> <span class="n">sprite</span>

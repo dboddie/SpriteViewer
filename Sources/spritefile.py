@@ -13,10 +13,16 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+"""The `spritefile` module contains classes for reading spritefiles.
+
+We import the classes necessary to read, decode and store sprite data."""
+
 from java.io import File, IOException, RandomAccessFile
 from java.lang import Exception, Object, String
 from java.nio import ByteBuffer, ByteOrder
 from java.util import List, Map
+
+"""We define a custom exception to report problems with spritefiles."""
 
 class SpritefileError(Exception):
 
@@ -27,12 +33,15 @@ class SpritefileError(Exception):
     def __init__(self, details):
         Exception.__init__(self, details)
 
+"""The following class represents a sprite and contains all the relevant
+information required to display and modify it. It also defines a `decoded`
+field that indicates whether the sprite has been decoded."""
 
 class Sprite(Object):
 
     __fields__ = {
         "name": String,
-        "read": bool, "offset": int,
+        "decoded": bool, "offset": int,
         "h_words": int, "v_lines": int,
         "first_bit": int, "last_bit": int,
         "bpp": int, "log2bpp": int,
@@ -46,8 +55,12 @@ class Sprite(Object):
     def __init__(self):
     
         Object.__init__(self)
-        self.read = False
+        self.decoded = False
 
+"""The following class represents a palette that can be associated with a
+sprite. Instances of this class are initially populated when their
+corresponding sprites are decoded, and their entries are read when colour data
+needs to be converted to RGBA values."""
 
 class Palette(Object):
 
@@ -76,6 +89,8 @@ class Palette(Object):
     def size(self):
         return len(self.entries)
 
+"""We define a class to represent an individual palette entry, defining primary
+and secondary colours that were traditionally associated with flashing colours."""
 
 class PaletteEntry(Object):
 
@@ -91,6 +106,11 @@ class PaletteEntry(Object):
         self.primary = primary
         self.secondary = secondary
 
+"""The following class represents a spritefile that can contain zero or more
+sprites. The class can either be instantiated with a `File`, in which case the
+contents of that file will be read and decoded, or without. The contents of a
+file can later be read into a `Spritefile` object by calling its `read` method,
+replacing its existing contents."""
 
 class Spritefile(Object):
 
@@ -403,7 +423,7 @@ class Spritefile(Object):
             # The image is stored in RGBA form.
             sprite.mode = 'RGBA'
         
-        sprite.read = True
+        sprite.decoded = True
     
     @args(void, [File])
     def read(self, file):
@@ -427,7 +447,7 @@ class Spritefile(Object):
         f = RandomAccessFile(self.file, "r")
         
         sprite = self.sprites[name]
-        if not sprite.read:
+        if not sprite.decoded:
             self.read_details(f, sprite)
         
         return sprite
